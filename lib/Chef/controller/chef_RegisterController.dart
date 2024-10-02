@@ -23,6 +23,7 @@ class chef_RegisterController {
         "email": chefregister.email,
         "password": chefregister.password,
         "gender": chefregister.gender,
+        "bio":chefregister.bio,
         "uid": userCredential.user!.uid
       });
 

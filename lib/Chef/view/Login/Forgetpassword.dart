@@ -80,6 +80,7 @@ final _formkey = GlobalKey<FormState>();  @override
                         chef_forgetpass_model chefpassreset=  chef_forgetpass_model(email: _emailController.text);
                           _chef_forgetPasswordcontroller.chefresetpass(chefpassreset, context);
                         }
+                        Navigator.pop(context);
                       },
                       style: ButtonStyle(
                         shape: WidgetStatePropertyAll(RoundedRectangleBorder(borderRadius: BorderRadius.circular(10))),

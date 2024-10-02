@@ -1,5 +1,7 @@
 
 
+import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 
 import 'package:flavour_fusion/widgets/custom_text.dart';
@@ -16,7 +18,25 @@ class ChefHome extends StatefulWidget {
 }
 
 class _ChefHomeState extends State<ChefHome> {
+    String? _profileImageUrl;
   @override
+   void initState() {
+    super.initState();
+    _loadProfileImage();
+  }
+    Future<void> _loadProfileImage() async {
+    User? user = FirebaseAuth.instance.currentUser;
+    if (user != null) {
+      DocumentSnapshot userData = await FirebaseFirestore.instance
+          .collection('ChefAuth')
+          .doc(user.uid)
+          .get();
+      
+      setState(() {
+        _profileImageUrl = userData['profileImage'];
+      });
+    }
+  }
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: Colors.black,
@@ -44,6 +64,12 @@ class _ChefHomeState extends State<ChefHome> {
                     },
                     child: CircleAvatar(
                       radius: 23,
+                      backgroundImage: _profileImageUrl != null
+                          ? NetworkImage(_profileImageUrl!)
+                          : null ,
+                          child:  _profileImageUrl == null
+                          ? Icon(Icons.person)
+                          : null,
                     ),
                   ),
                   SizedBox(
