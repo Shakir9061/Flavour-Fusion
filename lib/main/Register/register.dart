@@ -1,4 +1,5 @@
 import 'package:flavour_fusion/Chef/controller/chef_RegisterController.dart';
+import 'package:flavour_fusion/Chef/controller/chef_googleauthcontroller.dart';
 import 'package:flavour_fusion/Chef/model/chef_Register_Model.dart';
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
@@ -309,6 +310,9 @@ class _RegisterChefState extends State<RegisterChef> {
                       child: SizedBox(
                           width: 300,
                           child: ListTile(
+                            onTap: () {
+                              // Chef_googleauthcontroller().handleGoogleSignIn(context);
+                            },
                             minTileHeight: 50,
                             leading: Image.asset('images/google 2.png'),
                             title: Center(

@@ -1,3 +1,4 @@
+import 'package:flavour_fusion/Chef/view/Home/samplesearch.dart';
 import 'package:flutter/material.dart';
 import 'package:flavour_fusion/widgets/custom_text.dart';
 import 'package:flavour_fusion/Chef/view/Home/Shoppinglist.dart';
@@ -13,7 +14,7 @@ class Bottomnavigation_chef extends StatefulWidget {
 
 class _Bottomnavigation_chefState extends State<Bottomnavigation_chef> {
   var selectedindex=0;
-  List Pages=[ChefHome(),Serach_Chef(),Chef_Shoppinglist()];
+  List Pages=[ChefHome(),Search_chef(),Chef_Shoppinglist()];
   @override
   Widget build(BuildContext context) {
     return  Scaffold(

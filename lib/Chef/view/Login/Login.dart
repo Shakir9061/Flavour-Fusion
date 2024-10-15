@@ -1,4 +1,5 @@
 import 'package:flavour_fusion/Chef/controller/chef_Logincontroller.dart';
+import 'package:flavour_fusion/Chef/controller/chef_googleauthcontroller.dart';
 import 'package:flavour_fusion/Chef/model/chef_Loginmodel.dart';
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
@@ -6,7 +7,7 @@ import 'package:flavour_fusion/widgets/custom_text.dart';
 import 'package:flavour_fusion/Chef/view/Home/bottomnavigation.dart';
 import 'package:flavour_fusion/Chef/view/Home/home.dart';
 import 'package:flavour_fusion/Chef/view/Login/Forgetpassword.dart';
-import 'package:flavour_fusion/Chef/view/Register/register.dart';
+import 'package:flavour_fusion/main/Register/register.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:google_fonts/google_fonts.dart';
 
@@ -191,6 +192,9 @@ class _ChefLoginState extends State<ChefLogin> {
                       child: SizedBox(
                           width: 300.w,
                           child: ListTile(
+                            onTap: () {
+                            // Chef_googleauthcontroller().handleGoogleSignIn(context);
+                            },
                             minTileHeight: 50.h,
                             leading: Image.asset('images/google 2.png'),
                             title: Center(
