@@ -1,4 +1,4 @@
-class Chef_Register_Model {
+class user_Register_Model {
   String? name;
   String? email;
   String? password;
@@ -6,7 +6,7 @@ class Chef_Register_Model {
   String? uid;
  
 
-  Chef_Register_Model(
+  user_Register_Model(
       {this.name, this.email, this.password, this.gender, this.uid});
 
   Map<String, dynamic> tojson() {

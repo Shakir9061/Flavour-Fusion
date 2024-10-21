@@ -3,7 +3,8 @@ import 'package:flavour_fusion/widgets/custom_appbar.dart';
 import 'package:flavour_fusion/widgets/custom_text.dart';
 
 class UserprofileAdmin extends StatefulWidget {
-  const UserprofileAdmin({super.key});
+ final String? userId;
+  const UserprofileAdmin({super.key,  this. userId});
 
   @override
   State<UserprofileAdmin> createState() => _UserprofileAdminState();
@@ -14,15 +15,31 @@ class _UserprofileAdminState extends State<UserprofileAdmin> {
   Widget build(BuildContext context) {
     return  Scaffold(
       backgroundColor: Colors.black,
-      body: Column(
+       appBar: AppBar(
+        backgroundColor: Colors.black,
+        title: CustomText1(
+          text: 'User Profile',
+          size: 18,
+          weight: FontWeight.w600,
+        ),
+        centerTitle: true,
+        automaticallyImplyLeading: false,
+        leading: IconButton(
+          onPressed: () {
+            Navigator.pop(context);
+          },
+          icon: Icon(Icons.arrow_back, color: Colors.white),
+        ),
+      ),
+      body:
+       Column(
         children: [
-          ClipRRect(
-            borderRadius: BorderRadius.only(bottomLeft: Radius.circular(20),bottomRight: Radius.circular(20)),
-            child: CustomAppBar(title: 'User Profile')),
+         
             Padding(
               padding: const EdgeInsets.only(top: 50),
               child: CircleAvatar(
                 radius: 40,
+                backgroundImage: Image.network(widget.userId['']),
               ),
               
             ),

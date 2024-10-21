@@ -1,5 +1,5 @@
-import 'package:flavour_fusion/Chef/view/Home/searchbyingredients.dart';
-import 'package:flavour_fusion/Chef/view/Home/searchbytime.dart';
+import 'package:flavour_fusion/Chef/model/view/Home/searchbyingredients.dart';
+import 'package:flavour_fusion/Chef/model/view/Home/searchbytime.dart';
 import 'package:flavour_fusion/widgets/custom_appbar.dart';
 import 'package:flavour_fusion/widgets/custom_text.dart';
 import 'package:flutter/material.dart';
@@ -75,7 +75,7 @@ class _Serach1State extends State<Serach1> {
                     width: 120,
                     child: InkWell(
                       onTap: () {
-                        Navigator.push(context, MaterialPageRoute(builder: (context) => Searchbyingredientsuser(),));
+                        Navigator.push(context, MaterialPageRoute(builder: (context) => Searchbyingredients_chef(),));
                       },
                       child: Card(
                         color: Color(0xff313131),

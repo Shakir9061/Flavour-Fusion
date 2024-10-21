@@ -1,19 +1,19 @@
-import 'package:flavour_fusion/User/view/Home/Shoppinglist.dart';
-import 'package:flavour_fusion/User/view/Home/home.dart';
-import 'package:flavour_fusion/User/view/Home/search.dart';
 import 'package:flutter/material.dart';
+import 'package:flavour_fusion/widgets/custom_text.dart';
+import 'package:flavour_fusion/Chef/model/view/Home/Shoppinglist.dart';
+import 'package:flavour_fusion/Chef/model/view/Home/home.dart';
+import 'package:flavour_fusion/Chef/model/view/Home/search.dart';
 
-
-class Bottomnavigation_user extends StatefulWidget {
-  const Bottomnavigation_user({super.key});
+class Bottomnavigation_chef extends StatefulWidget {
+  const Bottomnavigation_chef({super.key});
 
   @override
-  State<Bottomnavigation_user> createState() => _Bottomnavigation_userState();
+  State<Bottomnavigation_chef> createState() => _Bottomnavigation_chefState();
 }
 
-class _Bottomnavigation_userState extends State<Bottomnavigation_user> {
+class _Bottomnavigation_chefState extends State<Bottomnavigation_chef> {
   var selectedindex=0;
-  List Pages=[Homeuser(),Serach1(),Shoppinglist()];
+  List Pages=[ChefHome(),Search_chef(),Chef_Shoppinglist()];
   @override
   Widget build(BuildContext context) {
     return  Scaffold(

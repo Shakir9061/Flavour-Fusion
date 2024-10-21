@@ -1,24 +1,26 @@
 import 'package:flavour_fusion/Chef/model/chef_Loginmodel.dart';
 import 'package:flavour_fusion/Chef/model/view/Home/bottomnavigation.dart';
+import 'package:flavour_fusion/User/model/user_loginmodel.dart';
+import 'package:flavour_fusion/User/view/Home/bottomnavigation.dart';
 import 'package:flavour_fusion/widgets/custom_text.dart';
 import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 
-class Chef_LoginController {
+class user_LoginController {
   final FirebaseAuth _auth = FirebaseAuth.instance;
   final FirebaseFirestore _firestore = FirebaseFirestore.instance;
 
-  Future<void> chefLogin(Chef_Login_Model chefLogin, BuildContext context) async {
+  Future<void> userLogin(user_Login_Model userlogin, BuildContext context) async {
     try {
-      // First, check if the email exists in the ChefAuth collection
-      QuerySnapshot chefSnapshot = await _firestore
-          .collection('ChefAuth')
-          .where('email', isEqualTo: chefLogin.email)
+    
+      QuerySnapshot userSnapshot = await _firestore
+          .collection('UserAuth')
+          .where('email', isEqualTo: userlogin.email)
           .get();
 
-      if (chefSnapshot.docs.isEmpty) {
+      if (userSnapshot.docs.isEmpty) {
         throw FirebaseAuthException(
           code: 'user-not-found',
           message: 'No chef found with this email.',
@@ -27,14 +29,14 @@ class Chef_LoginController {
 
       // If the email exists in ChefAuth, proceed with Firebase Authentication
       UserCredential userCredential = await _auth.signInWithEmailAndPassword(
-        email: chefLogin.email!,
-        password: chefLogin.password!,
+        email: userlogin.email!,
+        password: userlogin.password!,
       );
 
-      // If authentication is successful, navigate to the chef's home screen
+     
       Navigator.push(
         context,
-        MaterialPageRoute(builder: (context) => Bottomnavigation_chef()),
+        MaterialPageRoute(builder: (context) => Bottomnavigation_user()),
       );
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(content: CustomText1(text: 'Login Success', size: 18.spMin)),
@@ -43,7 +45,7 @@ class Chef_LoginController {
       String errorMessage;
       switch (e.code) {
         case 'user-not-found':
-          errorMessage = 'No chef account found with this email.';
+          errorMessage = 'No user account found with this email.';
           break;
         case 'wrong-password':
           errorMessage = 'Incorrect password.';

@@ -1,28 +1,28 @@
-import 'package:flavour_fusion/User/controller/user_logincontroller.dart';
-import 'package:flavour_fusion/User/model/user_loginmodel.dart';
-import 'package:flavour_fusion/User/view/Home/bottomnavigation.dart';
-import 'package:flavour_fusion/User/view/Login/Forgetpassword.dart';
-import 'package:flavour_fusion/User/view/Register/register.dart';
-import 'package:flavour_fusion/widgets/custom_text.dart';
+import 'package:flavour_fusion/Chef/controller/chef_Logincontroller.dart';
+import 'package:flavour_fusion/Chef/controller/chef_googleauthcontroller.dart';
+import 'package:flavour_fusion/Chef/model/chef_Loginmodel.dart';
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
-
+import 'package:flavour_fusion/widgets/custom_text.dart';
+import 'package:flavour_fusion/Chef/model/view/Home/bottomnavigation.dart';
+import 'package:flavour_fusion/Chef/model/view/Home/home.dart';
+import 'package:flavour_fusion/Chef/model/view/Login/Forgetpassword.dart';
+import 'package:flavour_fusion/Chef/model/view/Register/register.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:google_fonts/google_fonts.dart';
 
-class LoginUser extends StatefulWidget {
-  const LoginUser({super.key});
+class ChefLogin extends StatefulWidget {
+  const ChefLogin({super.key});
 
   @override
-  State<LoginUser> createState() => _LoginUserState();
+  State<ChefLogin> createState() => _ChefLoginState();
 }
 
-class _LoginUserState extends State<LoginUser> {
+class _ChefLoginState extends State<ChefLogin> {
   TextEditingController emailcontroller = TextEditingController();
   TextEditingController passwordcontroler = TextEditingController();
-  final user_LoginController user_loginController=user_LoginController();
+  final Chef_LoginController _chef_loginController = Chef_LoginController();
   final _formkey = GlobalKey<FormState>();
-
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -52,26 +52,27 @@ class _LoginUserState extends State<LoginUser> {
                     height: 60.h,
                   ),
                   SizedBox(
-                    height: 50.h,
+                 
                     width: 320.w,
                     child: TextFormField(
                       controller: emailcontroller,
-                       validator: (value) {
-                          if (value == null || value.isEmpty) {
-                            return 'Field cannot be empty';
-                          }
-                          return null;
-                        },
+                      validator: (value) {
+                        if (value == null || value.isEmpty) {
+                          return 'Field cannot be empty';
+                        }
+                        return null;
+                      },
+                      
                       cursorColor: Colors.teal,
                       style: GoogleFonts.poppins(
                           textStyle: TextStyle(color: Colors.white)),
                       decoration: InputDecoration(
+                        contentPadding: EdgeInsets.symmetric(vertical: 10,horizontal: 10),
                           focusedBorder: OutlineInputBorder(
                             borderSide:
                                 BorderSide(color: Colors.teal, width: 1.w),
                             borderRadius: BorderRadius.circular(10.r),
                           ),
-                          errorBorder: OutlineInputBorder(),
                           label: CustomText1(text: 'E-mail', size: 13.dg),
                           border: OutlineInputBorder(
                               borderRadius: BorderRadius.circular(10.r))),
@@ -80,11 +81,11 @@ class _LoginUserState extends State<LoginUser> {
                   Padding(
                     padding: EdgeInsets.only(top: 20.h),
                     child: SizedBox(
-                      height: 50.h,
+                     
                       width: 320.w,
                       child: TextFormField(
                         controller: passwordcontroler,
-                         validator: (value) {
+                        validator: (value) {
                           if (value == null || value.isEmpty) {
                             return 'Field cannot be empty';
                           }
@@ -94,12 +95,12 @@ class _LoginUserState extends State<LoginUser> {
                         style: GoogleFonts.poppins(
                             textStyle: TextStyle(color: Colors.white)),
                         decoration: InputDecoration(
+                           contentPadding: EdgeInsets.symmetric(vertical: 10,horizontal: 10),
                             focusedBorder: OutlineInputBorder(
                               borderSide:
                                   BorderSide(color: Colors.teal, width: 1.w),
                               borderRadius: BorderRadius.circular(10.r),
                             ),
-                            errorBorder: OutlineInputBorder(),
                             label: CustomText1(text: 'Password', size: 13.sp),
                             border: OutlineInputBorder(
                                 borderRadius: BorderRadius.circular(10.r))),
@@ -110,13 +111,13 @@ class _LoginUserState extends State<LoginUser> {
                     mainAxisAlignment: MainAxisAlignment.end,
                     children: [
                       Padding(
-                          padding: EdgeInsets.only(top: 10.h, right: 50.w),
+                          padding: EdgeInsets.only(top: 5.h, right: 50.w),
                           child: GestureDetector(
                               onTap: () {
                                 Navigator.push(
                                     context,
                                     MaterialPageRoute(
-                                      builder: (context) => ForgetPassword(),
+                                      builder: (context) => ChefForgetPassword(),
                                     ));
                               },
                               child: CustomText1(
@@ -132,12 +133,12 @@ class _LoginUserState extends State<LoginUser> {
                       width: 320.w,
                       child: ElevatedButton(
                           onPressed: () {
-                            if(_formkey.currentState!.validate()){
-                          user_Login_Model userlogin=user_Login_Model(
+                        if(_formkey.currentState!.validate()){
+                          Chef_Login_Model cheflogin=Chef_Login_Model(
                             email: emailcontroller.text,
                             password: passwordcontroler.text,
                           );
-                          user_loginController.userLogin(userlogin, context);
+                          _chef_loginController.chefLogin(cheflogin, context);
                             emailcontroller.clear();
                             passwordcontroler.clear();
                           
@@ -146,8 +147,7 @@ class _LoginUserState extends State<LoginUser> {
                           style: ButtonStyle(
                               shape: WidgetStatePropertyAll(
                                   RoundedRectangleBorder(
-                                      borderRadius:
-                                          BorderRadius.circular(10.r))),
+                                      borderRadius: BorderRadius.circular(10.r))),
                               backgroundColor:
                                   WidgetStatePropertyAll(Colors.teal)),
                           child: CustomText1(text: 'Login', size: 16.sp)),
@@ -166,7 +166,7 @@ class _LoginUserState extends State<LoginUser> {
                               Navigator.push(
                                   context,
                                   MaterialPageRoute(
-                                    builder: (context) => RegisterUser(),
+                                    builder: (context) => RegisterChef(),
                                   ));
                             },
                           text: "Signup",
@@ -174,6 +174,7 @@ class _LoginUserState extends State<LoginUser> {
                               textStyle: TextStyle(color: Color(0xff2420F1))))
                     ])),
                   ),
+                 
                 ],
               ),
             ),

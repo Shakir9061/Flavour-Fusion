@@ -1,6 +1,6 @@
 import 'package:firebase_auth/firebase_auth.dart';
-import 'package:flavour_fusion/Chef/view/Home/bottomnavigation.dart';
-import 'package:flavour_fusion/Chef/view/Home/home.dart';
+import 'package:flavour_fusion/Chef/model/view/Home/bottomnavigation.dart';
+import 'package:flavour_fusion/Chef/model/view/Home/home.dart';
 import 'package:flutter/material.dart';
 import 'package:google_sign_in/google_sign_in.dart';
 

@@ -3,7 +3,7 @@ import 'package:flavour_fusion/User/view/Login/Login.dart';
 import 'package:flutter/material.dart';
 import 'package:flavour_fusion/widgets/custom_text.dart';
 import 'package:flavour_fusion/Admin/view/login/login.dart';
-import 'package:flavour_fusion/Chef/view/Login/Login.dart';
+import 'package:flavour_fusion/Chef/model/view/Login/Login.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 
 class WelcomePage extends StatefulWidget {
