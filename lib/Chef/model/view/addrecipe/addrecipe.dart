@@ -195,17 +195,33 @@ class _ChefAddRecipesState extends State<ChefAddRecipes> {
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: Colors.black,
-      appBar: PreferredSize(
-        preferredSize: Size.fromHeight(kToolbarHeight),
-        child: ClipRRect(
-          borderRadius: BorderRadius.only(bottomLeft: Radius.circular(20),bottomRight: Radius.circular(20)),
-          child: CustomAppBar(title: 'Add Recipe',weight: FontWeight.bold,actions: [
-          
-             IconButton(onPressed: () {
+      appBar:AppBar(
+        backgroundColor: Colors.black,
+        
+        title: CustomText1(text: 'Add Recipe',size: 20.spMin,color: Colors.white,weight: FontWeight.w500,),
+        leading: IconButton(onPressed: () {
+          Navigator.pop(context);
+        }, icon: Icon(Icons.arrow_back,color: Colors.white,)),
+        actions: [
+      
+         Padding(
+           padding: const EdgeInsets.only(right: 10),
+           child: SizedBox(
+            width: 80,
+             child: ElevatedButton(
+              style: ElevatedButton.styleFrom(
+                backgroundColor: Colors.teal
+              ),
+              onPressed: () {
               _saveRecipe();
-            }, icon: Icon(Icons.check,size: 35,color: Colors.black,)),
-
-          ],))),
+                     }, child:Text('save',style: TextStyle(color: Colors.white),)),
+           ),
+         ),
+      
+      ],
+      ) ,
+      
+     
       body: Form(
         key: _formKey,
         child: SingleChildScrollView(
@@ -246,12 +262,18 @@ class _ChefAddRecipesState extends State<ChefAddRecipes> {
               mainAxisAlignment: MainAxisAlignment.spaceEvenly,
               children: [
                 ElevatedButton(
+                  style: ElevatedButton.styleFrom(
+                    backgroundColor: Colors.teal
+                  ),
                   onPressed: _pickImage,
-                  child: Text('Add Image'),
+                  child: Text('Add Image',style: TextStyle(color: Colors.white),),
                 ),
                 ElevatedButton(
+                   style: ElevatedButton.styleFrom(
+                    backgroundColor:Colors.teal
+                  ),
                   onPressed: _pickVideo,
-                  child: Text('Add Video'),
+                  child: Text('Add Video',style: TextStyle(color: Colors.white)),
                 ),
               ],
             ),
@@ -347,10 +369,22 @@ class _ChefAddRecipesState extends State<ChefAddRecipes> {
                 return null;
               },
         controller: controller,
+        cursorColor: Colors.teal,
+        style: TextStyle(color: Colors.white),
         decoration: InputDecoration(
           filled: true,
-          fillColor: Color(0xff313131),
+          fillColor: Color(0xff1D1B20),
           labelText: label,
+          
+    
+    errorStyle: TextStyle(height: 0),
+          enabledBorder: OutlineInputBorder(
+            borderRadius: BorderRadius.circular(10),
+            borderSide: BorderSide(color: Colors.teal)
+            
+          ),
+          
+          
           labelStyle: GoogleFonts.poppins(textStyle: TextStyle(color: Color(0xffE0DBDB))),
           border: OutlineInputBorder(borderRadius: BorderRadius.circular(10)),
         ),

@@ -1,8 +1,9 @@
+import 'package:flavour_fusion/Admin/view/home/AddNotification_Admin.dart';
+import 'package:flavour_fusion/Admin/view/home/cheflist.dart';
 import 'package:flutter/material.dart';
 import 'package:flavour_fusion/widgets/custom_appbar.dart';
 import 'package:flavour_fusion/widgets/custom_text.dart';
 import 'package:flavour_fusion/Admin/view/home/Reports.dart';
-import 'package:flavour_fusion/Admin/view/home/cheftabbar.dart';
 import 'package:flavour_fusion/Admin/view/home/managerecipes.dart';
 import 'package:flavour_fusion/Admin/view/home/userlist.dart';
 
@@ -15,7 +16,7 @@ class AdminHome extends StatefulWidget {
 
 class _AdminHomeState extends State<AdminHome> {
   List<String> text=['User List','Chef List','Manage Recipes','Reports'];
-  var pages=[UserList(),ChefTabBar(),Managerecipes(),Reports()];
+  var pages=[UserList(),cheflist(),Managerecipes(),Reports()];
   @override
   Widget build(BuildContext context) {
     return  Scaffold(
@@ -28,7 +29,11 @@ class _AdminHomeState extends State<AdminHome> {
             automaticallyImplyLeading: false,
             actions: [Padding(
               padding: const EdgeInsets.only(right: 20),
-              child: Icon(Icons.notifications,size: 35,color: Color.fromARGB(255, 236, 178, 4),),
+              child: IconButton(
+                onPressed: () {
+                  Navigator.push(context, MaterialPageRoute(builder: (context) =>AddnotificationAdmin() ,));
+                },
+                icon: Icon(Icons.notifications,size: 35,color: Color.fromARGB(255, 236, 178, 4),)),
             )],
             weight: FontWeight.bold,)),
           Expanded(

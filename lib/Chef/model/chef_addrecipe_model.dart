@@ -46,7 +46,7 @@ class Recipe {
     return Recipe(
       id: id,
       title: data['title'] ?? '',
-      category: data['category'] ?? '',
+       category: data['category']?.toString().toLowerCase() ?? '',
       ingredients: data['ingredients'] ?? '',
       serve: data['serve'] ?? '',
       time: data['time'] ?? '',
@@ -65,7 +65,7 @@ class Recipe {
     return {
       'id': id,
       'title': title,
-      'category': category,
+      'category': category.toLowerCase(),
       'ingredients': ingredients,
       'serve': serve,
       'time': time,

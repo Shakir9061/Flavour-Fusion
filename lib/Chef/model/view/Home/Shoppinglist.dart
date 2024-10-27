@@ -69,20 +69,19 @@ class _Chef_ShoppinglistState extends State<Chef_Shoppinglist> {
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: Colors.black,
+      appBar: AppBar(
+        backgroundColor: Colors.black,
+        automaticallyImplyLeading: false,
+        title: CustomText1(text: 'Shopping List', size: 20, weight: FontWeight.w500),
+        centerTitle: true,
+        leading: IconButton(
+          onPressed: () => Navigator.push(context,MaterialPageRoute(builder: (context) => Bottomnavigation_chef(),)),
+          icon: Icon(Icons.arrow_back, color: Colors.white),
+        ),
+      ),
       body: Column(
         children: [
-          ClipRRect(
-              borderRadius: BorderRadius.only(
-                  bottomLeft: Radius.circular(20),
-                  bottomRight: Radius.circular(20)),
-              child: CustomAppBar(
-                title: 'Shopping List',
-                weight: FontWeight.bold,
-                automaticallyImplyLeading: false,
-                leading: IconButton(onPressed: () {
-                  Navigator.push(context, MaterialPageRoute(builder: (context) => Bottomnavigation_chef(),));
-                }, icon: Icon(Icons.arrow_back)),
-              )),
+         
           Expanded(
               child: StreamBuilder<QuerySnapshot>(
             stream: _firestore
@@ -131,7 +130,7 @@ class _Chef_ShoppinglistState extends State<Chef_Shoppinglist> {
                       return Padding(
                         padding: const EdgeInsets.only(top: 8.0),
                         child: ListTile(
-                          tileColor: Colors.grey[800],
+                          tileColor: Color(0xff1D1B20),
                           shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
                           title: Text(item['name'], style:const TextStyle(color:Colors.white)),
                           trailing: IconButton(

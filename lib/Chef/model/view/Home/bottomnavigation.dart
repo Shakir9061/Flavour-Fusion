@@ -23,7 +23,7 @@ class _Bottomnavigation_chefState extends State<Bottomnavigation_chef> {
           BottomNavigationBarItem(icon: Icon(Icons.search,),label:'search'),
             BottomNavigationBarItem(icon: Icon(Icons.menu,),label:'Shopping list')
       ],
-      backgroundColor: Color(0xff313131),
+      backgroundColor: Color(0xff1D1B20),
       selectedItemColor:Colors.teal,
       unselectedItemColor:Colors.white ,
       currentIndex: selectedindex,

@@ -20,7 +20,7 @@ class _Chef_editprofileState extends State<Chef_editprofile> {
   final FirebaseStorage _storage = FirebaseStorage.instance;
   final ImagePicker _picker = ImagePicker();
   final TextEditingController _nameController = TextEditingController();
-  final TextEditingController _emailController = TextEditingController();
+  
   String? _selectedGender;
   final List<String> _genders = ['Male', 'Female'];
 
@@ -68,7 +68,7 @@ class _Chef_editprofileState extends State<Chef_editprofile> {
        
         await _firestore.collection('ChefAuth').doc(user.uid).update({
           'name': _nameController.text,
-          'email': _emailController.text,
+          
           'gender': _selectedGender,
         });
         ScaffoldMessenger.of(context).showSnackBar(
@@ -113,7 +113,7 @@ class _Chef_editprofileState extends State<Chef_editprofile> {
 
           var userData = snapshot.data!.data() as Map<String, dynamic>;
           _nameController.text = userData['name'] ?? 'No name found';
-          _emailController.text = userData['email'] ?? 'No email found';
+        
           _selectedGender = userData['gender'] ?? _genders[0];
           String? profileImageUrl = userData['profileImage'];
 
@@ -170,12 +170,8 @@ class _Chef_editprofileState extends State<Chef_editprofile> {
                     ),
                   ),
                 ),
-                SizedBox(height: 20),
-                CustomTextformfield(
-                  controller: _emailController,
-                  style: TextStyle(color: Colors.white),
-                ),
-                SizedBox(height: 50),
+               
+                SizedBox(height: 30),
                 SizedBox(
                   width: 330,
                   height: 50,

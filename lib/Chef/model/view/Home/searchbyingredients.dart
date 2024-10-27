@@ -35,6 +35,27 @@ class _Searchbyingredients_chefState extends State<Searchbyingredients_chef> {
     });
   }
 
+  // New function to extract matched ingredients
+  String getMatchedIngredients(String allIngredients) {
+    List<String> matched = [];
+    String lowerIngredients = allIngredients.toLowerCase();
+    
+    for (String searchIngredient in _ingredients) {
+      if (lowerIngredients.contains(searchIngredient)) {
+        // Find the complete ingredient name that contains the search term
+        List<String> ingredientsList = allIngredients.split(',');
+        for (String ingredient in ingredientsList) {
+          if (ingredient.trim().toLowerCase().contains(searchIngredient)) {
+            matched.add(ingredient.trim());
+            break;
+          }
+        }
+      }
+    }
+    
+    return matched.join(', ');
+  }
+
   Future<void> _searchRecipes() async {
     setState(() {
       _isSearching = true;
@@ -128,14 +149,29 @@ class _Searchbyingredients_chefState extends State<Searchbyingredients_chef> {
                   itemBuilder: (context, index) {
                     var recipe = _searchResults[index];
                     return ListTile(
-                       onTap: () {
-                      Navigator.push(context, MaterialPageRoute(builder: (context) => RecipeDetailPage_chef( recipe: Recipe.fromMap(recipe),
-                            recipeId: recipe['id'],),));
-                    },
-                      leading: Image.network(recipe['imageUrls'][0],height: 50,width: 50,fit: BoxFit.cover,),
-                      title: Text(recipe['title'], style: TextStyle(color: Colors.white)),
-                      subtitle: Text(recipe['ingredients'], style: TextStyle(color: Colors.white70)),
-                      // You can add more details or styling here
+                      onTap: () {
+                        Navigator.push(context, MaterialPageRoute(builder: (context) => RecipeDetailPage_chef(
+                          recipe: Recipe.fromMap(recipe),
+                          recipeId: recipe['id'],
+                        )));
+                      },
+                      leading: Image.network(
+                        recipe['imageUrls'][0],
+                        height: 50,
+                        width: 50,
+                        fit: BoxFit.cover,
+                      ),
+                      title: Text(
+                        recipe['title'], 
+                        style: TextStyle(color: Colors.white)
+                      ),
+                      subtitle: Text(
+                        'Matched: ${getMatchedIngredients(recipe['ingredients'])}',
+                        style: TextStyle(
+                          color: Colors.white70,
+                          fontStyle: FontStyle.italic,
+                        ),
+                      ),
                     );
                   },
                 ),

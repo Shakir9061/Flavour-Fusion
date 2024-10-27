@@ -48,14 +48,20 @@ dependencies:
   cloud_firestore: ^5.4.2
   image_picker: ^1.1.0
   firebase_storage: ^12.3.0
-  permission_handler: ^11.3.1
+  intl: ^0.19.0
   flutter_switch: ^0.3.2
   google_sign_in: ^6.2.1
-  carousel_slider: ^4.2.1
+  carousel_slider: ^4.0.0
   video_player: ^2.7.0
   connectivity_plus: ^6.0.0
-  flutter_typeahead: ^5.2.0
+  flutter_typeahead: ^4.8.0
   material_symbols_icons: ^4.2789.0
+  dots_indicator: ^3.0.0
+  sms_autofill: ^2.3.0
+  permission_handler: ^10.2.0
+  flutter_services_binding: ^0.1.0
+  
+
   
 
 

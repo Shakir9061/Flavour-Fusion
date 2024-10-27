@@ -9,7 +9,6 @@ import 'package:flavour_fusion/widgets/custom_text.dart';
 import 'package:flavour_fusion/Chef/model/view/Home/searchbyingredients.dart';
 import 'package:flavour_fusion/Chef/model/view/Home/searchbytime.dart';
 import 'package:flutter_typeahead/flutter_typeahead.dart';
-import 'package:google_fonts/google_fonts.dart';
 
 class Search_chef extends StatefulWidget {
   const Search_chef({Key? key}) : super(key: key);
@@ -100,34 +99,63 @@ Future<void> _showRecipesByCategory(String category) async {
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: Colors.black,
+      appBar: AppBar(
+        backgroundColor: Colors.black,
+        automaticallyImplyLeading: false,
+        title: CustomText1(text: 'Search', size: 20, weight: FontWeight.w500),
+        centerTitle: true,
+        leading: IconButton(
+          onPressed: () => Navigator.pop(context),
+          icon: Icon(Icons.arrow_back, color: Colors.white),
+        ),
+      ),
+
       body: SingleChildScrollView(
         child: Column(
           children: [
-            ClipRRect(
-              borderRadius: BorderRadius.only(
-                  bottomLeft: Radius.circular(20),
-                  bottomRight: Radius.circular(20)),
-              child: CustomAppBar(
-                title: 'Search',
-                size: 25,
-                automaticallyImplyLeading: false,
-                leading: IconButton(
-                  onPressed: () {
-                    Navigator.push(context, MaterialPageRoute(builder: (context) => Bottomnavigation_chef()));
-                  },
-                  icon: Icon(Icons.arrow_back)
-                ),
-              ),
-            ),
+           
             Center(
               child: Padding(
-                padding: const EdgeInsets.only(top: 40),
+                padding: const EdgeInsets.only(top: 10),
                 child: SizedBox(
                   height: 50,
                   width: 320,
-                  child: TypeAheadField<DocumentSnapshot>(
+                  child: TypeAheadField(
                  
-            
+           textFieldConfiguration: TextFieldConfiguration(
+      controller: _searchController,
+      decoration: InputDecoration(
+        filled: true,
+        fillColor: Color(0xff1D1B20),
+        hintText: 'Search recipes...',
+        hintStyle: TextStyle(
+          color: Colors.white54,
+          fontSize: 16,
+        ),
+        prefixIcon: Icon(Icons.search, color: Colors.white),
+        contentPadding: EdgeInsets.symmetric(vertical: 15, horizontal: 20),
+         enabledBorder: OutlineInputBorder(
+      borderRadius: BorderRadius.circular(10),
+      borderSide: BorderSide(
+        color: Colors.white54, // Border color when not focused
+        width: 1,
+      ),
+    ),
+    
+    // Border when the text field is focused
+    focusedBorder: OutlineInputBorder(
+      borderRadius: BorderRadius.circular(10),
+      borderSide: BorderSide(
+        color: Colors.teal, // Border color when focused
+        width: 1,
+      ),
+    ),
+      ),
+      style: TextStyle(
+        color: Colors.white,
+        fontSize: 16,
+      ),
+    ),
          
                     suggestionsCallback: (pattern) async {
                       return await _getRecipeSuggestions(pattern);
@@ -151,7 +179,7 @@ Future<void> _showRecipesByCategory(String category) async {
                         ),
                       );
                     },
-                    onSelected: (DocumentSnapshot suggestion) {
+                    onSuggestionSelected: (DocumentSnapshot suggestion) {
                       Map<String, dynamic> data =
                           suggestion.data() as Map<String, dynamic>;
                       Recipe recipe = Recipe.fromMap(data);
@@ -182,7 +210,7 @@ Future<void> _showRecipesByCategory(String category) async {
                         Navigator.push(context, MaterialPageRoute(builder: (context) => Searchbyingredients_chef()));
                       },
                       child: Card(
-                        color: Color(0xff313131),
+                        color:Color(0xff1D1B20),
                         child: Center(
                           child: CustomText1(
                               textAlign: TextAlign.center,
@@ -200,7 +228,7 @@ Future<void> _showRecipesByCategory(String category) async {
                         Navigator.push(context, MaterialPageRoute(builder: (context) => Searchbytimesuser()));
                       },
                       child: Card(
-                        color: Color(0xff313131),
+                        color: Color(0xff1D1B20),
                         child: Center(
                           child: Padding(
                             padding: const EdgeInsets.only(left: 10, right: 10),

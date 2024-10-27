@@ -23,7 +23,6 @@ class ReviewTab_chef extends StatelessWidget {
             .orderBy('timestamp', descending: true)
             .snapshots(),
             
-          
         builder: (context, snapshot) {
           if (snapshot.hasError) {
             return Center(child: Text('Error: ${snapshot.error}'));
@@ -70,8 +69,9 @@ class ReviewTab_chef extends StatelessWidget {
 
   Widget _buildReviewCard(BuildContext context, DocumentSnapshot review) {
     Map<String, dynamic> reviewData = review.data() as Map<String, dynamic>;
+     String reviewId = review.id;
     return Card(
-      color: Colors.grey[800],
+      color: Colors.grey[900],
       shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
       margin: EdgeInsets.symmetric(vertical: 8.h, horizontal: 16.w),
       child: Padding(
@@ -79,7 +79,7 @@ class ReviewTab_chef extends StatelessWidget {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            _buildReviewHeader(context, reviewData, review.id),
+            _buildReviewHeader(context, reviewData, reviewId),
             SizedBox(height: 12.h),
             _buildRatingBar(reviewData),
             SizedBox(height: 12.h),
@@ -94,6 +94,9 @@ class ReviewTab_chef extends StatelessWidget {
   }
 
   Widget _buildReviewHeader(BuildContext context, Map<String, dynamic> reviewData, String reviewId) {
+    final currentUserId = FirebaseAuth.instance.currentUser?.uid;
+    final isCurrentUserReview = currentUserId == reviewData['userId'];
+
     return Row(
       children: [
         CircleAvatar(
@@ -123,33 +126,48 @@ class ReviewTab_chef extends StatelessWidget {
             ],
           ),
         ),
-        PopupMenuButton(
-          iconColor: Colors.white,
-          color: Colors.grey[600],
-          itemBuilder: (context) => [
-            PopupMenuItem(
-              onTap: () => _showReportDialog(context),
-              child: Row(
-                children: [
-                  Icon(Icons.flag, color: Colors.white),
-                  SizedBox(width: 8.w),
-                  CustomText1(text: 'Report', size: 14.sp),
-                ],
-              ),
-            ),
-            if (FirebaseAuth.instance.currentUser?.uid == reviewData['userId'])
-              PopupMenuItem(
-                onTap: () => _deleteReview(context, reviewId),
-                child: Row(
-                  children: [
-                    Icon(Icons.delete, color: Colors.white),
-                    SizedBox(width: 8.w),
-                    CustomText1(text: 'Delete', size: 14.sp),
-                  ],
-                ),
-              ),
-          ],
-        ),
+        if (isCurrentUserReview || !isCurrentUserReview) // Show menu button in either case
+          PopupMenuButton(
+            iconColor: Colors.white,
+            color: Colors.grey[600],
+            itemBuilder: (context) {
+              List<PopupMenuEntry> menuItems = [];
+              
+              // Only show report option if it's not the current user's review
+              if (!isCurrentUserReview) {
+                menuItems.add(
+                  PopupMenuItem(
+                    onTap: () => _showReportDialog(context,reviewData,reviewId),
+                    child: Row(
+                      children: [
+                        Icon(Icons.flag, color: Colors.white),
+                        SizedBox(width: 8.w),
+                        CustomText1(text: 'Report', size: 14.sp),
+                      ],
+                    ),
+                  ),
+                );
+              }
+
+              // Show delete option if it's the current user's review
+              if (isCurrentUserReview) {
+                menuItems.add(
+                  PopupMenuItem(
+                    onTap: () => _deleteReview(context, reviewId),
+                    child: Row(
+                      children: [
+                        Icon(Icons.delete, color: Colors.white),
+                        SizedBox(width: 8.w),
+                        CustomText1(text: 'Delete', size: 14.sp),
+                      ],
+                    ),
+                  ),
+                );
+              }
+
+              return menuItems;
+            },
+          ),
       ],
     );
   }
@@ -185,23 +203,26 @@ class ReviewTab_chef extends StatelessWidget {
       ),
     );
   }
-
-  Future<void> _showReportDialog(BuildContext context) async {
-    final result = await showDialog<String>(
-      context: context,
-      builder: (BuildContext context) => AddReport_chef(),
+Future<void> _showReportDialog(BuildContext context, Map<String, dynamic> reviewData,String reviewId,) async {
+  final result = await showDialog<String>(
+    context: context,
+    builder: (BuildContext context) => AddReport_chef(
+      reviewId: reviewId,
+      reportedUserId: reviewData['userId'],
+    ),
+  );
+  
+  if (result == 'success') {
+    ScaffoldMessenger.of(context).showSnackBar(
+      SnackBar(content: Text('Report submitted successfully')),
     );
-    if (result != null) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text('Report submitted successfully')),
-      );
-    }
   }
+}
 
   Future<void> _deleteReview(BuildContext context, String reviewId) async {
     try {
       await FirebaseFirestore.instance
-          .collection('recipe reviews')
+          .collection('recipe review')
           .doc(recipeId)
           .collection('reviews')
           .doc(reviewId)

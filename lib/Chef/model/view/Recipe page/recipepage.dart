@@ -1,3 +1,4 @@
+import 'dart:io';
 import 'package:flavour_fusion/Chef/model/view/Recipe%20page/review.dart';
 import 'package:flavour_fusion/Chef/model/view/addrecipe/addrecipe.dart';
 import 'package:flutter/material.dart';
@@ -9,6 +10,8 @@ import 'package:google_fonts/google_fonts.dart';
 import 'package:flavour_fusion/widgets/custom_appbar.dart';
 import 'package:flavour_fusion/widgets/custom_text.dart';
 import 'package:flavour_fusion/Chef/model/chef_addrecipe_model.dart';
+import 'package:dots_indicator/dots_indicator.dart';
+
 
 class ChefViewRecipes extends StatefulWidget {
   const ChefViewRecipes({Key? key}) : super(key: key);
@@ -94,30 +97,64 @@ class _ChefViewRecipesState extends State<ChefViewRecipes> {
     );
   }
 
-  void _deleteRecipe(String recipeId) async {
-    final user = FirebaseAuth.instance.currentUser;
-    if (user != null) {
-      try {
-        await FirebaseFirestore.instance
-            .collection('recipes')
-            .doc(user.uid)
-            .collection('recipes_list')
-            .doc(recipeId)
-            .delete();
-               await FirebaseFirestore.instance
-            .collection('recipes')
-            .doc(recipeId)
-            .delete();
-        ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(content: Text('Recipe deleted successfully')),
-        );
-      } catch (e) {
-        ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(content: Text('Failed to delete recipe')),
-        );
-      }
+void _deleteRecipe(String recipeId) async {
+  final user = FirebaseAuth.instance.currentUser;
+  if (user != null) {
+    try {
+      // Create a batch to perform multiple delete operations
+      WriteBatch batch = FirebaseFirestore.instance.batch();
+
+      // Reference to the recipe in chef's personal list
+      DocumentReference chefRecipeRef = FirebaseFirestore.instance
+          .collection('recipes')
+          .doc(user.uid)
+          .collection('recipes_list')
+          .doc(recipeId);
+
+      // Reference to the recipe in main recipes collection
+      DocumentReference mainRecipeRef = FirebaseFirestore.instance
+          .collection('recipes')
+          .doc(recipeId);
+
+      // Add delete operations to batch
+      batch.delete(chefRecipeRef);
+      batch.delete(mainRecipeRef);
+
+      // Commit the batch
+      await batch.commit();
+
+      // Delete associated reviews if they exist
+      // QuerySnapshot reviewsSnapshot = await FirebaseFirestore.instance
+      //     .collection('recipes')
+      //     .doc(recipeId)
+      //     .collection('reviews')
+      //     .get();
+
+      // if (reviewsSnapshot.docs.isNotEmpty) {
+      //   WriteBatch reviewsBatch = FirebaseFirestore.instance.batch();
+      //   for (var doc in reviewsSnapshot.docs) {
+      //     reviewsBatch.delete(doc.reference);
+      //   }
+      //   await reviewsBatch.commit();
+      // }
+
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          content: Text('Recipe deleted successfully'),
+          backgroundColor: Colors.green,
+        ),
+      );
+    } catch (e) {
+      print('Error deleting recipe: $e');
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          content: Text('Failed to delete recipe'),
+          backgroundColor: Colors.red,
+        ),
+      );
     }
   }
+}
 }
 
 class RecipeCard extends StatelessWidget {
@@ -189,7 +226,7 @@ class RecipeDetailPage_chef extends StatefulWidget {
   final Recipe recipe;
   final String recipeId;
 
-  const RecipeDetailPage_chef({Key? key, required this.recipe,required  this. recipeId}) : super(key: key);
+  const RecipeDetailPage_chef({Key? key, required this.recipe, required this.recipeId}) : super(key: key);
 
   @override
   _RecipeDetailPage_chefState createState() => _RecipeDetailPage_chefState();
@@ -199,6 +236,9 @@ class _RecipeDetailPage_chefState extends State<RecipeDetailPage_chef> {
   VideoPlayerController? _videoPlayerController;
   bool _isVideoInitialized = false;
   bool _hasVideoError = false;
+   int _currentCarouselIndex = 0; 
+     Map<String, dynamic>? _chefData;
+  bool _isLoadingChef = true;
 
   @override
   void initState() {
@@ -206,8 +246,33 @@ class _RecipeDetailPage_chefState extends State<RecipeDetailPage_chef> {
     if (widget.recipe.videoUrl != null) {
       _initializeVideoPlayer();
     }
+    _loadChefData();
   }
+ Future<void> _loadChefData() async {
+    try {
+      setState(() => _isLoadingChef = true);
+      
+      final chefDoc = await FirebaseFirestore.instance
+          .collection('ChefAuth')
+          .doc(widget.recipe.chefId)
+          .get();
 
+      if (chefDoc.exists) {
+        setState(() {
+          _chefData = chefDoc.data();
+          _isLoadingChef = false;
+        });
+      } else {
+        setState(() {
+          _chefData = null;
+          _isLoadingChef = false;
+        });
+      }
+    } catch (e) {
+      print('Error loading chef data: $e');
+      setState(() => _isLoadingChef = false);
+    }
+  }
   Future<void> _initializeVideoPlayer() async {
     try {
       _videoPlayerController = VideoPlayerController.networkUrl(Uri.parse(widget.recipe.videoUrl!));
@@ -235,63 +300,114 @@ class _RecipeDetailPage_chefState extends State<RecipeDetailPage_chef> {
       length: 2,
       child: Scaffold(
         backgroundColor: Colors.black,
-        appBar: PreferredSize(
-          preferredSize: Size.fromHeight(kToolbarHeight),
-          child: ClipRRect(
-            borderRadius: BorderRadius.only(
-              bottomLeft: Radius.circular(20),
-              bottomRight: Radius.circular(20),
-            ),
-            child: CustomAppBar(
-              title: widget.recipe.title,
-              weight: FontWeight.bold,
-            ),
-          ),
+        appBar: AppBar(
+        backgroundColor: Colors.black,
+        automaticallyImplyLeading: false,
+        title: CustomText1(text: 'Recipe Details', size: 20, weight: FontWeight.w500),
+        centerTitle: true,
+        leading: IconButton(
+          onPressed: () => Navigator.pop(context),
+          icon: Icon(Icons.arrow_back, color: Colors.white),
         ),
+      ),
         body: Column(
           children: [
-              _buildMediaCarousel(),
-              Padding(
-                padding: const EdgeInsets.only(top: 10),
-                child: TabBar(
-                dividerHeight: 0,
-                labelStyle: GoogleFonts.poppins(
-                  textStyle: TextStyle(
-                    color: Colors.teal,
-                    fontWeight: FontWeight.bold,
-                    fontSize: 18,
-                  ),
-                ),
-                indicatorColor: Colors.teal,
-                unselectedLabelColor: Color(0xffE0DBDB),
-                tabs: [
-                  Tab(text: 'Recipe Details'),
-                  Tab(text: 'Reviews'),
-                ],
-                            ),
+            _buildMediaCarousel(),
+            Padding(
+              padding: const EdgeInsets.only(left: 30.0, top: 10.0),
+              child: Align(
+                alignment: Alignment.centerLeft,
+                child: _buildRecipeHeader(),
               ),
-            Expanded(child: TabBarView(children: [_buildRecipeDetails(),ReviewTab_chef(recipeId: widget.recipeId!,)]))
+            ),
+            TabBar(
+              dividerHeight: 0,
+              labelStyle: GoogleFonts.poppins(
+                textStyle: TextStyle(
+                  color: Colors.teal,
+                  fontWeight: FontWeight.bold,
+                  fontSize: 18,
+                ),
+              ),
+              indicatorColor: Colors.teal,
+              unselectedLabelColor: Color(0xffE0DBDB),
+              tabs: [
+                Tab(text: 'Recipe Details'),
+                Tab(text: 'Reviews'),
+              ],
+            ),
+            Expanded(
+              child: TabBarView(
+                children: [
+                  SingleChildScrollView(
+                    child: Padding(
+                      padding: const EdgeInsets.all(16.0),
+                      child: _buildRecipeDetails(),
+                    ),
+                  ),
+                  ReviewTab_chef(recipeId: widget.recipeId),
+                ],
+              ),
+            ),
           ],
-        )
+        ),
       ),
     );
   }
 
   Widget _buildMediaCarousel() {
-    List<Widget> mediaItems = [
-      ...widget.recipe.imageUrls.map((url) => Image.network(url, fit: BoxFit.cover)).toList(),
-      if (widget.recipe.videoUrl != null)
-        _buildVideoPlayer(),
+   List<Widget> mediaItems = [
+      ...widget.recipe.imageUrls.map((url) => Container(
+            width: MediaQuery.of(context).size.width,
+            child: Image.network(
+              url,
+              fit: BoxFit.cover,
+              width: double.infinity,
+              height: 300,
+              errorBuilder: (context, error, stackTrace) {
+                return Container(
+                  color: Colors.grey[900],
+                  child: const Icon(Icons.error, color: Colors.white),
+                );
+              },
+            ),
+          )).toList(),
+      if (widget.recipe.videoUrl != null) _buildVideoPlayer(),
     ];
 
-    return CarouselSlider(
-      items: mediaItems,
-      options: CarouselOptions(
-        height: 300,
-        
-        viewportFraction: 1.0,
-        enlargeCenterPage: false,
-      ),
+
+    return Column(
+      children: [
+        Container(
+          width: MediaQuery.of(context).size.width ,
+          child: CarouselSlider(
+            items: mediaItems,
+            options: CarouselOptions(
+              height: 300,
+              viewportFraction: 1.0,
+              enlargeCenterPage: false,
+              enableInfiniteScroll: mediaItems.length > 1,
+              onPageChanged: (index, reason) {
+                setState(() {
+                  _currentCarouselIndex = index;
+                });
+              },
+            ),
+          ),
+        ),
+        const SizedBox(height: 8),
+        DotsIndicator(
+          dotsCount: mediaItems.length,
+          position: _currentCarouselIndex,
+          decorator: DotsDecorator(
+            size: const Size.square(8.0),
+            activeSize: const Size.square(8.0),
+            color: Colors.grey.withOpacity(0.3), // Inactive color
+            activeColor: Colors.teal, // Active color
+            spacing: const EdgeInsets.symmetric(horizontal: 4.0),
+          ),
+        ),
+      ],
     );
   }
 
@@ -302,51 +418,127 @@ class _RecipeDetailPage_chefState extends State<RecipeDetailPage_chef> {
     if (!_isVideoInitialized) {
       return Center(child: CircularProgressIndicator());
     }
-    return Stack(
-      alignment: Alignment.center,
-      children: [
-        AspectRatio(
-          aspectRatio: _videoPlayerController!.value.aspectRatio,
-          child: VideoPlayer(_videoPlayerController!),
-        ),
-        FloatingActionButton(
-          onPressed: () {
-            setState(() {
-              _videoPlayerController!.value.isPlaying
-                  ? _videoPlayerController!.pause()
-                  : _videoPlayerController!.play();
-            });
-          },
-          child: Icon(
-            _videoPlayerController!.value.isPlaying ? Icons.pause : Icons.play_arrow,
+    return Container(
+      width: MediaQuery.of(context).size.width,
+      height: 300,
+      child: Stack(
+        alignment: Alignment.center,
+        children: [
+          AspectRatio(
+            aspectRatio: _videoPlayerController!.value.aspectRatio,
+            child:Container(
+              width: double.infinity,
+              child: FittedBox(
+                fit: BoxFit.cover,
+                child: SizedBox(
+                  width: _videoPlayerController!.value.size.width,
+                  height: _videoPlayerController!.value.size.height,
+                  child: VideoPlayer(_videoPlayerController!),
+                ),
+              ),
+            ),
           ),
+          FloatingActionButton(
+            onPressed: () {
+              setState(() {
+                _videoPlayerController!.value.isPlaying
+                    ? _videoPlayerController!.pause()
+                    : _videoPlayerController!.play();
+              });
+            },
+            child: Icon(
+              _videoPlayerController!.value.isPlaying ? Icons.pause : Icons.play_arrow,
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+
+  Widget _buildRecipeHeader() {
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Text(
+          widget.recipe.title,
+          style: GoogleFonts.poppins(
+            color: Colors.white,
+            fontSize: 24,
+            fontWeight: FontWeight.bold,
+          ),
+        ),
+        Text(
+          'Added on: ${widget.recipe.timestamp.toLocal().toString().split(' ')[0]}',
+          style: TextStyle(color: Colors.grey[400]),
         ),
       ],
     );
   }
 
   Widget _buildRecipeDetails() {
+    return Card(
+      color: Colors.grey[900],
+      child: Padding(
+        padding: const EdgeInsets.all(16.0),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            _buildDetailRow('Category', widget.recipe.category),
+            _buildDetailRow('Serves', widget.recipe.serve),
+            _buildDetailRow('Preparation Time', widget.recipe.time),
+            const SizedBox(height: 16),
+            _buildDetailSection('Ingredients', widget.recipe.ingredients),
+            const SizedBox(height: 16),
+            _buildDetailSection('Cooking Method', widget.recipe.cookingMethod),
+            const SizedBox(height: 16),
+            _buildDetailSection('Tips', widget.recipe.tips),
+          ],
+        ),
+      ),
+    );
+  }
+
+  Widget _buildDetailRow(String label, String value) {
     return Padding(
-      padding: const EdgeInsets.only(left: 30,top: 20),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
+      padding: const EdgeInsets.only(bottom: 8.0),
+      child: Row(
         children: [
-          CustomText1(text: 'Category: ${widget.recipe.category}', size: 18),
-          SizedBox(height: 10),
-          CustomText1(text: 'Ingredients:', size: 18),
-          Text(widget.recipe.ingredients, style: TextStyle(color: Colors.white)),
-          SizedBox(height: 10),
-          CustomText1(text: 'Serve: ${widget.recipe.serve}', size: 18),
-          CustomText1(text: 'Time: ${widget.recipe.time}', size: 18),
-          SizedBox(height: 10),
-          CustomText1(text: 'Cooking Method:', size: 18),
-          Text(widget.recipe.cookingMethod, style: TextStyle(color: Colors.white)),
-          SizedBox(height: 10),
-          CustomText1(text: 'Tips:', size: 18),
-          Text(widget.recipe.tips, style: TextStyle(color: Colors.white)),
+          Text(
+            '$label: ',
+            style: TextStyle(
+              color: Colors.teal,
+              fontWeight: FontWeight.bold,
+            ),
+          ),
+          Expanded(
+            child: Text(
+              value,
+              style: TextStyle(color: Colors.white),
+            ),
+          ),
         ],
       ),
     );
   }
- 
+
+  Widget _buildDetailSection(String label, String content) {
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Text(
+          label,
+          style: TextStyle(
+            color: Colors.teal,
+            fontWeight: FontWeight.bold,
+            fontSize: 16,
+          ),
+        ),
+        const SizedBox(height: 8),
+        Text(
+          content,
+          style: TextStyle(color: Colors.white),
+        ),
+      ],
+    );
+  }
 }
