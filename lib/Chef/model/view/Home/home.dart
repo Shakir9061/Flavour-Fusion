@@ -2,13 +2,13 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flavour_fusion/Chef/model/chef_addrecipe_model.dart';
 import 'package:flavour_fusion/Chef/model/view/profile/newchefprofile.dart';
+import 'package:flavour_fusion/common/theme/themeprovider.dart';
 import 'package:flutter/material.dart';
-
-import 'package:flavour_fusion/widgets/custom_text.dart';
 import 'package:flavour_fusion/Chef/model/view/Home/notifications.dart';
 import 'package:flavour_fusion/Chef/model/view/Recipe%20page/recipepage.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:provider/provider.dart';
 
 class ChefHome extends StatefulWidget {
   const ChefHome({super.key});
@@ -19,6 +19,7 @@ class ChefHome extends StatefulWidget {
 
 class _ChefHomeState extends State<ChefHome> {
   String? _profileImageUrl;
+
   @override
   void initState() {
     super.initState();
@@ -39,11 +40,13 @@ class _ChefHomeState extends State<ChefHome> {
     }
   }
 
+  @override
   Widget build(BuildContext context) {
+    final themeProvider = Provider.of<ThemeProvider>(context);
+    final colorScheme = Theme.of(context).colorScheme;
 
-    
     return Scaffold(
-      backgroundColor: Colors.black,
+      backgroundColor: Theme.of(context).scaffoldBackgroundColor,
       appBar: PreferredSize(
         preferredSize: Size(0, 80),
         child: ClipRRect(
@@ -51,49 +54,52 @@ class _ChefHomeState extends State<ChefHome> {
               bottomLeft: Radius.circular(20),
               bottomRight: Radius.circular(20)),
           child: AppBar(
-            backgroundColor: Color(0xff1D1B20),
+            backgroundColor: Theme.of(context).cardColor,
             automaticallyImplyLeading: false,
-            leading:  Padding(
-              padding:  EdgeInsets.only(left: 10.w),
+            leading: Padding(
+              padding: EdgeInsets.only(left: 10.w),
               child: InkWell(
-                      onTap: () {
-                        Navigator.push(
-                            context,
-                            MaterialPageRoute(
-                              builder: (context) => chef_profilePage(),
-                            ));
-                      },
-                      child: CircleAvatar(
-                        radius: 23,
-                        backgroundImage: _profileImageUrl != null
-                            ? NetworkImage(_profileImageUrl!)
-                            : null,
-                        child:
-                            _profileImageUrl == null ? Icon(Icons.person) : null,
-                      ),
-                    ),
+                onTap: () {
+                  Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                        builder: (context) => chef_profilePage(),
+                      ));
+                },
+                child: CircleAvatar(
+                  radius: 23,
+                  backgroundImage: _profileImageUrl != null
+                      ? NetworkImage(_profileImageUrl!)
+                      : null,
+                  child: _profileImageUrl == null ? Icon(Icons.person) : null,
+                ),
+              ),
             ),
-                  actions: [
-                    Padding(
-                      padding:  EdgeInsets.only(right: 10.w),
-                      child: IconButton(
-                        onPressed: () {
-                          Navigator.push(
-                              context,
-                              MaterialPageRoute(
-                                builder: (context) => Notificationchef(),
-                              ));
-                        },
-                        icon: Icon(
-                          Icons.notifications,
-                          size: 35.w,
-                          color: Colors.amber[300],
-                        )),
-                    )
-                  ],
+            actions: [
+              Padding(
+                padding: EdgeInsets.only(right: 10.w),
+                child: IconButton(
+                    onPressed: () {
+                      Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                            builder: (context) => Notificationchef(),
+                          ));
+                    },
+                    icon: Icon(
+                      Icons.notifications,
+                      size: 35.w,
+                      color: Colors.amber[300],
+                    )),
+              )
+            ],
             centerTitle: true,
             toolbarHeight: 80,
-            title:Text('Flavour Fusion',style: GoogleFonts.dancingScript(fontSize: 35,color: Colors.teal,fontWeight: FontWeight.w700),)
+            title: Text(
+              'Flavour Fusion',
+              style: GoogleFonts.dancingScript(
+                  fontSize: 35, color: Colors.teal, fontWeight: FontWeight.w700),
+            ),
           ),
         ),
       ),
@@ -110,7 +116,7 @@ class _ChefHomeState extends State<ChefHome> {
                 width: 200,
               ),
               SectionTitle('Popular recipes'),
-             PopularRecipesShow(height: 180,width: 150,),
+              PopularRecipesShow(height: 180, width: 150),
               SectionTitle('Chef Recipes'),
               ChefRecipesShow()
             ],
@@ -125,8 +131,11 @@ class RecommendedRecipe extends StatelessWidget {
   final double? height;
   final double? width;
   RecommendedRecipe(this.height, this.width);
+
   @override
   Widget build(BuildContext context) {
+    final colorScheme = Theme.of(context).colorScheme;
+
     return Padding(
       padding: const EdgeInsets.only(top: 10),
       child: Container(
@@ -142,7 +151,7 @@ class RecommendedRecipe extends StatelessWidget {
                   child: Container(
                     width: width!.w,
                     decoration: BoxDecoration(
-                      color: Colors.grey[800],
+                      color: colorScheme.secondary,
                       borderRadius: BorderRadius.circular(10.r),
                     ),
                   ),
@@ -166,11 +175,16 @@ class SectionTitle extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final colorScheme = Theme.of(context).colorScheme;
+
     return Padding(
       padding: const EdgeInsets.only(top: 10),
       child: Text(
-         title,
-        style: TextStyle(fontSize: 19.spMin,fontWeight: FontWeight.bold,color: Colors.white),
+        title,
+        style: TextStyle(
+            fontSize: 19.spMin,
+            fontWeight: FontWeight.bold,
+            color: colorScheme.onSurface),
       ),
     );
   }
@@ -209,6 +223,9 @@ class _ChefRecipesShowState extends State<ChefRecipesShow> {
 
   @override
   Widget build(BuildContext context) {
+    final themeProvider = Provider.of<ThemeProvider>(context);
+    final colorScheme = Theme.of(context).colorScheme;
+
     return StreamBuilder<QuerySnapshot>(
       stream: _recipesStream,
       builder: (context, recipeSnapshot) {
@@ -247,8 +264,7 @@ class _ChefRecipesShowState extends State<ChefRecipesShow> {
                               ));
                         },
                         child: Card(
-                          // margin: EdgeInsets.symmetric(horizontal: 8.0),
-                          color: Color(0xff1D1B20),
+                          color: Theme.of(context).cardColor,
                           child: Stack(
                             children: [
                               Column(
@@ -272,7 +288,8 @@ class _ChefRecipesShowState extends State<ChefRecipesShow> {
                                     child: Text(
                                       recipe.title,
                                       style: TextStyle(
-                                          color: Colors.white, fontSize: 14),
+                                          color: colorScheme.onSurface,
+                                          fontSize: 14),
                                       maxLines: 2,
                                       overflow: TextOverflow.ellipsis,
                                     ),
@@ -287,7 +304,7 @@ class _ChefRecipesShowState extends State<ChefRecipesShow> {
                                         ? Icons.favorite
                                         : Icons.favorite_border,
                                     color:
-                                        isFavorite ? Colors.red : Colors.white,
+                                        isFavorite ? Colors.red : colorScheme.onSurface,
                                   ),
                                   onPressed: () =>
                                       _toggleFavorite(recipeDoc.id, isFavorite),
@@ -308,7 +325,6 @@ class _ChefRecipesShowState extends State<ChefRecipesShow> {
     );
   }
 }
-
 class PopularRecipesShow extends StatefulWidget {
   final double height;
   final double width;
@@ -334,8 +350,7 @@ class _PopularRecipesShowState extends State<PopularRecipesShow> {
     super.initState();
     _recipesStream = _firestore
         .collection('recipes')
-        .orderBy('timestamp',descending: true) 
-        
+        .orderBy('timestamp', descending: true)
         .snapshots();
     _favoritesStream =
         _firestore.collection('userFavorites').doc(_userId).snapshots();
@@ -350,6 +365,9 @@ class _PopularRecipesShowState extends State<PopularRecipesShow> {
 
   @override
   Widget build(BuildContext context) {
+    final themeProvider = Provider.of<ThemeProvider>(context);
+    final colorScheme = Theme.of(context).colorScheme;
+
     return StreamBuilder<QuerySnapshot>(
         stream: _recipesStream,
         builder: (context, recipeSnapshot) {
@@ -376,7 +394,7 @@ class _PopularRecipesShowState extends State<PopularRecipesShow> {
                           recipeDoc.data() as Map<String, dynamic>);
                       bool isFavorite = favorites[recipeDoc.id] == true;
                       String recipeId = recipeDoc.id;
-                     
+
                       return SizedBox(
                         width: widget.width,
                         child: GestureDetector(
@@ -392,15 +410,14 @@ class _PopularRecipesShowState extends State<PopularRecipesShow> {
                             );
                           },
                           child: Card(
-                            color: Color(0xff1D1B20),
+                            color: Theme.of(context).cardColor,
                             shape: RoundedRectangleBorder(
                               borderRadius: BorderRadius.circular(10),
                             ),
                             child: Stack(
                               children: [
                                 Column(
-                                  crossAxisAlignment:
-                                      CrossAxisAlignment.start,
+                                  crossAxisAlignment: CrossAxisAlignment.start,
                                   children: [
                                     if (recipe.imageUrls.isNotEmpty)
                                       Expanded(
@@ -428,13 +445,12 @@ class _PopularRecipesShowState extends State<PopularRecipesShow> {
                                             Text(
                                               recipe.title,
                                               style: TextStyle(
-                                                color: Colors.white,
+                                                color: colorScheme.onSurface,
                                                 fontSize: 14,
                                               ),
                                               maxLines: 1,
                                               overflow: TextOverflow.ellipsis,
                                             ),
-                                           
                                           ],
                                         ),
                                       ),
@@ -451,7 +467,7 @@ class _PopularRecipesShowState extends State<PopularRecipesShow> {
                                           : Icons.favorite_border,
                                       color: isFavorite
                                           ? Colors.red
-                                          : Colors.white,
+                                          : colorScheme.onSurface,
                                     ),
                                     onPressed: () =>
                                         _toggleFavorite(recipeId, isFavorite),

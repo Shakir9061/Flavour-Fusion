@@ -25,7 +25,7 @@ class CustomTextformfield extends StatelessWidget {
         hintText: hintText,
         hintStyle: hintStyle,
         filled: true,
-        fillColor: Color(0xff1D1B20),
+        fillColor: Theme.of(context).cardColor,
         border: OutlineInputBorder(borderRadius: BorderRadius.circular(10),)
       ),
       style: style,

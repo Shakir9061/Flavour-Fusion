@@ -75,16 +75,17 @@ class _SettingsChefState extends State<SettingsChef> {
 
   @override
   Widget build(BuildContext context) {
+     final ColorScheme=Theme.of(context).colorScheme;
     return Scaffold(
-      backgroundColor: Colors.black,
+      backgroundColor: Theme.of(context).scaffoldBackgroundColor,
         appBar: AppBar(
-        backgroundColor: Colors.black,
+        backgroundColor: Theme.of(context).scaffoldBackgroundColor,
         automaticallyImplyLeading: false,
-        title: CustomText1(text: 'Settings', size: 20, weight: FontWeight.w500),
+        title: CustomText1(text: 'Settings', size: 20, weight: FontWeight.w500,color: ColorScheme.primary,),
         centerTitle: true,
         leading: IconButton(
           onPressed: () => Navigator.pop(context),
-          icon: Icon(Icons.arrow_back, color: Colors.white),
+          icon: Icon(Icons.arrow_back, color:  ColorScheme.primary),
         ),
       ),
       body: Column(
@@ -109,7 +110,7 @@ class _SettingsChefState extends State<SettingsChef> {
                             child: CustomText1(
                               text: text[index],
                               size: 18,
-                              color: Colors.white,
+                              color:  ColorScheme.primary,
                             ),
                           ),
                         ),

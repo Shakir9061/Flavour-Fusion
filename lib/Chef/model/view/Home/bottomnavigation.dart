@@ -16,6 +16,7 @@ class _Bottomnavigation_chefState extends State<Bottomnavigation_chef> {
   List Pages=[ChefHome(),Search_chef(),Chef_Shoppinglist()];
   @override
   Widget build(BuildContext context) {
+     final colorScheme = Theme.of(context).colorScheme;
     return  Scaffold(
       body:Pages.elementAt(selectedindex),
       bottomNavigationBar: BottomNavigationBar(items: [
@@ -23,9 +24,9 @@ class _Bottomnavigation_chefState extends State<Bottomnavigation_chef> {
           BottomNavigationBarItem(icon: Icon(Icons.search,),label:'search'),
             BottomNavigationBarItem(icon: Icon(Icons.menu,),label:'Shopping list')
       ],
-      backgroundColor: Color(0xff1D1B20),
+      backgroundColor:Theme.of(context).cardColor,
       selectedItemColor:Colors.teal,
-      unselectedItemColor:Colors.white ,
+      unselectedItemColor:colorScheme.primary,
       currentIndex: selectedindex,
       type: BottomNavigationBarType.fixed,
       

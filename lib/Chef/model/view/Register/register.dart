@@ -76,6 +76,8 @@ class _RegisterChefState extends State<RegisterChef> {
                                   BorderSide(color: Colors.teal, width: 1),
                               borderRadius: BorderRadius.circular(10),
                             ),
+                              errorBorder: OutlineInputBorder(borderSide: BorderSide(color: Colors.red),borderRadius: BorderRadius.circular(10)),
+                          enabledBorder: OutlineInputBorder(borderSide: BorderSide(color: Colors.white,),borderRadius: BorderRadius.circular(10)),
                             label: CustomText1(text: 'Name', size: 13),
                             border: OutlineInputBorder(
                                 borderRadius: BorderRadius.circular(10))),
@@ -89,7 +91,7 @@ class _RegisterChefState extends State<RegisterChef> {
                       width: 320,
                       decoration: BoxDecoration(
                         borderRadius: BorderRadius.circular(10),
-                        border: Border.all(color: Colors.white60, width: 0.5),
+                        border: Border.all(color: Colors.white60,),
                       ),
                       child: FormField<String>(
                         validator: (value) {
@@ -162,6 +164,8 @@ class _RegisterChefState extends State<RegisterChef> {
                                   BorderSide(color: Colors.teal, width: 1),
                               borderRadius: BorderRadius.circular(10),
                             ),
+                              errorBorder: OutlineInputBorder(borderSide: BorderSide(color: Colors.red),borderRadius: BorderRadius.circular(10)),
+                          enabledBorder: OutlineInputBorder(borderSide: BorderSide(color: Colors.white,),borderRadius: BorderRadius.circular(10)),
                             label: CustomText1(text: 'E-mail', size: 13),
                             border: OutlineInputBorder(
                                 borderRadius: BorderRadius.circular(10))),
@@ -189,6 +193,8 @@ class _RegisterChefState extends State<RegisterChef> {
                                   BorderSide(color: Colors.teal, width: 1),
                               borderRadius: BorderRadius.circular(10),
                             ),
+                              errorBorder: OutlineInputBorder(borderSide: BorderSide(color: Colors.red),borderRadius: BorderRadius.circular(10)),
+                          enabledBorder: OutlineInputBorder(borderSide: BorderSide(color: Colors.white,),borderRadius: BorderRadius.circular(10)),
                             label: CustomText1(text: 'Password', size: 13),
                             border: OutlineInputBorder(
                                 borderRadius: BorderRadius.circular(10))),
@@ -196,38 +202,10 @@ class _RegisterChefState extends State<RegisterChef> {
                     ),
                   ),
                 
-                  SizedBox(
-                    height: 10,
-                  ),
-                  Row(
-                    children: [
-                      SizedBox(
-                        width: 10,
-                      ),
-                      CustomText1(
-                        text: 'Documents',
-                        size: 20,
-                        weight: FontWeight.bold,
-                      ),
-                    ],
-                  ),
-                  SizedBox(
-                    height: 10,
-                  ),
-                  Container(
-                    height: 200,
-                    width: 300,
-                    decoration: BoxDecoration(
-                        borderRadius: BorderRadius.circular(10),
-                        color: Colors.grey[800]),
-                    child: IconButton(
-                        onPressed: () {},
-                        icon: Icon(
-                          Icons.add,
-                          color: Colors.white,
-                          size: 45,
-                        )),
-                  ),
+                 
+                 
+                 
+                 
                   Padding(
                     padding: const EdgeInsets.only(top: 40),
                     child: SizedBox(

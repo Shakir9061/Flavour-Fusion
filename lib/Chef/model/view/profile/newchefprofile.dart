@@ -1,18 +1,16 @@
-import 'dart:io';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
-import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flavour_fusion/Chef/model/view/Home/bottomnavigation.dart';
 import 'package:flavour_fusion/Chef/model/view/Recipe%20page/recipepage.dart';
 import 'package:flavour_fusion/Chef/model/view/profile/chef_EditProfile.dart';
 import 'package:flavour_fusion/Chef/model/view/profile/savedrecipes.dart';
 import 'package:flavour_fusion/Chef/model/view/settings/settings.dart';
+import 'package:flavour_fusion/common/theme/themeprovider.dart';
 import 'package:flavour_fusion/widgets/custom_text.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_switch/flutter_switch.dart';
-import 'package:image_picker/image_picker.dart';
-import 'package:material_symbols_icons/material_symbols_icons.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:material_symbols_icons/material_symbols_icons.dart';
+import 'package:provider/provider.dart';
 
 class chef_profilePage extends StatefulWidget {
   const chef_profilePage({super.key});
@@ -24,9 +22,7 @@ class chef_profilePage extends StatefulWidget {
 class _chef_profilePageState extends State<chef_profilePage> {
   final FirebaseAuth _auth = FirebaseAuth.instance;
   final FirebaseFirestore _firestore = FirebaseFirestore.instance;
-  final FirebaseStorage _storage = FirebaseStorage.instance;
-  final ImagePicker _picker = ImagePicker();
-  
+
   Stream<DocumentSnapshot> _getUserStream() {
     User? user = _auth.currentUser;
     if (user != null) {
@@ -35,25 +31,30 @@ class _chef_profilePageState extends State<chef_profilePage> {
     return Stream.empty();
   }
 
-  List<String> title = ['Theme','Edit Profile', 'Saved', 'Settings','My Recipes'];
-  List<Widget> icons = [
-    Icon(Icons.contrast, color: Colors.white, size: 24.sp),
-    Icon(Icons.edit, color: Colors.white, size: 24.sp),
-    Icon(Icons.bookmark, color: Colors.white, size: 24.sp),
-    Icon(Icons.settings, color: Colors.white, size: 24.sp),
-    Icon(Icons.dining_sharp, color: Colors.white, size: 24.sp)
+  List<String> title = ['Theme', 'Edit Profile', 'Saved', 'Settings', 'My Recipes'];
+  List<IconData> icons = [
+    Icons.contrast,
+    Icons.edit,
+    Icons.bookmark,
+    Icons.settings,
+    Icons.dining_sharp
   ];
-  bool status = false;
-  bool themeSwitch = false;
-  List Pages=[null, Chef_editprofile(), SavedRecipesPage_chef(), SettingsChef(), ChefViewRecipes()];
+  List Pages = [null, Chef_editprofile(), SavedRecipesPage_chef(), SettingsChef(), ChefViewRecipes()];
 
   @override
   Widget build(BuildContext context) {
+    final themeProvider = Provider.of<ThemeProvider>(context);
+    final colorScheme = Theme.of(context).colorScheme;
+
     return Scaffold(
-      backgroundColor: Colors.black,
+      backgroundColor: Theme.of(context).scaffoldBackgroundColor,
       appBar: AppBar(
-        backgroundColor: Colors.black,
-        title: CustomText1(text: 'My Profile', size: 18.sp),
+        backgroundColor: Theme.of(context).appBarTheme.backgroundColor,
+        title: CustomText1(
+          text: 'My Profile',
+          size: 18.sp,
+          color: colorScheme.onSurface,
+        ),
         centerTitle: true,
         automaticallyImplyLeading: false,
         leading: IconButton(
@@ -67,7 +68,7 @@ class _chef_profilePageState extends State<chef_profilePage> {
           },
           icon: Icon(
             Icons.arrow_back,
-            color: Colors.white,
+            color: colorScheme.onSurface,
             size: 24.sp,
           ),
         ),
@@ -91,7 +92,7 @@ class _chef_profilePageState extends State<chef_profilePage> {
           String name = userData['name'] ?? 'No name found';
           String email = userData['email'] ?? 'No email found';
           String? profileImageUrl = userData['profileImage'];
-          
+
           return SingleChildScrollView(
             child: Padding(
               padding: EdgeInsets.only(top: 20.h),
@@ -106,7 +107,7 @@ class _chef_profilePageState extends State<chef_profilePage> {
                           width: 1.sw,
                           decoration: BoxDecoration(
                             borderRadius: BorderRadius.circular(50.r),
-                            color: Color(0xff1D1B20),
+                            color: Theme.of(context).cardColor,
                           ),
                           child: Padding(
                             padding: EdgeInsets.only(top: 70.h, bottom: 20.h),
@@ -116,11 +117,13 @@ class _chef_profilePageState extends State<chef_profilePage> {
                                 CustomText1(
                                   text: name,
                                   size: 15.sp,
+                                  color: colorScheme.onSurface,
                                   weight: FontWeight.w600,
                                 ),
                                 CustomText1(
                                   text: email,
                                   size: 15.sp,
+                                  color: colorScheme.onSurface,
                                   weight: FontWeight.w400,
                                 ),
                                 SizedBox(height: 30.h),
@@ -132,23 +135,31 @@ class _chef_profilePageState extends State<chef_profilePage> {
                                     return Column(
                                       children: [
                                         ListTile(
-                                          leading: icons[index],
-                                          title: CustomText1(text: title[index], size: 15.sp),
+                                          leading: Icon(
+                                            icons[index],
+                                            color: colorScheme.onSurface,
+                                            size: 24.sp,
+                                          ),
+                                          title: CustomText1(
+                                            text: title[index],
+                                            size: 15.sp,
+                                            color: colorScheme.onSurface,
+                                          ),
                                           trailing: index == 0
                                               ? Switch(
-                                                  value: themeSwitch,
+                                                  value: themeProvider.isDarkMode,
                                                   onChanged: (val) {
-                                                    setState(() {
-                                                      themeSwitch = val;
-                                                    });
+                                                    themeProvider.toggleTheme();
                                                   },
                                                 )
-                                              : Icon(Icons.arrow_forward_ios, color: Colors.white, size: 20.sp),
+                                              : Icon(
+                                                  Icons.arrow_forward_ios,
+                                                  color: colorScheme.onSurface,
+                                                  size: 20.sp,
+                                                ),
                                           onTap: () {
                                             if (index == 0) {
-                                              setState(() {
-                                                themeSwitch = !themeSwitch;
-                                              });
+                                              themeProvider.toggleTheme();
                                             } else if (Pages[index] != null) {
                                               Navigator.push(
                                                 context,
@@ -159,7 +170,10 @@ class _chef_profilePageState extends State<chef_profilePage> {
                                             }
                                           },
                                         ),
-                                        Divider(thickness: 0.5),
+                                        Divider(
+                                          thickness: 0.5,
+                                          color: Theme.of(context).dividerColor,
+                                        ),
                                       ],
                                     );
                                   },
@@ -171,17 +185,24 @@ class _chef_profilePageState extends State<chef_profilePage> {
                                     height: 50.h,
                                     child: ElevatedButton(
                                       style: ElevatedButton.styleFrom(
-                                        backgroundColor: Color(0xff1D1B20),
+                                        backgroundColor: Theme.of(context).cardColor,
                                         shape: RoundedRectangleBorder(
                                           borderRadius: BorderRadius.circular(50),
-                                          side: BorderSide(width: 0.2,color: Colors.white)
-                                        )
+                                          side: BorderSide(
+                                            width: 0.2,
+                                            color: colorScheme.onSurface,
+                                          ),
+                                        ),
                                       ),
                                       onPressed: () {},
-                                      child: CustomText1(text: 'Log Out', size: 18.sp,color: Colors.red,),
+                                      child: CustomText1(
+                                        text: 'Log Out',
+                                        size: 18.sp,
+                                        color: Colors.red,
+                                      ),
                                     ),
                                   ),
-                                )
+                                ),
                               ],
                             ),
                           ),
@@ -190,7 +211,7 @@ class _chef_profilePageState extends State<chef_profilePage> {
                           top: 0,
                           child: CircleAvatar(
                             radius: 60.r,
-                            backgroundColor: Color(0xff1D1B20),
+                            backgroundColor: Theme.of(context).cardColor,
                             child: GestureDetector(
                               child: CircleAvatar(
                                 radius: 50.r,
@@ -198,7 +219,9 @@ class _chef_profilePageState extends State<chef_profilePage> {
                                     ? NetworkImage(profileImageUrl)
                                     : null,
                                 child: profileImageUrl == null
-                                    ? Icon(Icons.person_add_alt_1, size: 40.sp)
+                                    ? Icon(Icons.person_add_alt_1,
+                                        size: 40.sp,
+                                        color: colorScheme.onSurface)
                                     : null,
                               ),
                             ),

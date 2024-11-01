@@ -193,15 +193,16 @@ class _ChefAddRecipesState extends State<ChefAddRecipes> {
   }
   @override
   Widget build(BuildContext context) {
+    final ColorScheme=Theme.of(context).colorScheme;
     return Scaffold(
-      backgroundColor: Colors.black,
+      backgroundColor: Theme.of(context).scaffoldBackgroundColor,
       appBar:AppBar(
-        backgroundColor: Colors.black,
+        backgroundColor:  Theme.of(context).scaffoldBackgroundColor,
         
-        title: CustomText1(text: 'Add Recipe',size: 20.spMin,color: Colors.white,weight: FontWeight.w500,),
+        title: CustomText1(text: 'Add Recipe',size: 20.spMin,color: ColorScheme.primary,weight: FontWeight.w500,),
         leading: IconButton(onPressed: () {
           Navigator.pop(context);
-        }, icon: Icon(Icons.arrow_back,color: Colors.white,)),
+        }, icon: Icon(Icons.arrow_back,color: ColorScheme.primary,)),
         actions: [
       
          Padding(
@@ -285,10 +286,10 @@ class _ChefAddRecipesState extends State<ChefAddRecipes> {
                   child: Row(
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
-                      _buildTextField('Title',width: 200,controller: _titleController),
+                      _buildTextField('Title',context,TextInputType.text, width: 200,controller: _titleController),
                       Column(
                         children: [
-                          _buildTextField('Category',width: 130,controller: _categoryController),
+                          _buildTextField('Category',context,TextInputType.text, width: 130,controller: _categoryController),
                           
                         ],
                       ),
@@ -303,12 +304,12 @@ class _ChefAddRecipesState extends State<ChefAddRecipes> {
                   child: Row(
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
-                      _buildTextField('Ingredients',width: 200,maxLines: 10,height: 110,controller: _ingredientsController),
+                      _buildTextField('Ingredients',context,TextInputType.text, width: 200,maxLines: 10,height: 110,controller: _ingredientsController),
                         Column(
                           children: [
-                            _buildTextField('Serve',width: 130,controller: _serveController),
+                            _buildTextField('Serve',context,TextInputType.number, width: 130,controller: _serveController,),
                              SizedBox(height: 10.h,),
-                              _buildTextField('Time',width: 130,controller: _timeController),
+                              _buildTextField('Time',context,TextInputType.number, width: 130,controller: _timeController),
                           ],
                         ),
                     ],
@@ -318,7 +319,7 @@ class _ChefAddRecipesState extends State<ChefAddRecipes> {
                   padding: const EdgeInsets.all(8.0),
                   child: Row(
                     children: [
-                      CustomText1(text: 'Cooking Method', size: 20),
+                      CustomText1(text: 'Cooking Method', size: 20,color: ColorScheme.primary,),
                     ],
                   ),
                   
@@ -327,7 +328,7 @@ class _ChefAddRecipesState extends State<ChefAddRecipes> {
                   padding: const EdgeInsets.only(left: 8),
                   child: Row(
                     children: [
-                      _buildTextField('',height: 120,maxLines: 10,width: 350,controller:_cookingMethodController ),
+                      _buildTextField('',context,TextInputType.text, height: 120,maxLines: 10,width: 350,controller:_cookingMethodController ),
                     ],
                   ),
                 ),
@@ -335,7 +336,7 @@ class _ChefAddRecipesState extends State<ChefAddRecipes> {
                   padding: const EdgeInsets.all(8.0),
                   child: Row(
                     children: [
-                      CustomText1(text: 'Tips', size: 20),
+                      CustomText1(text: 'Tips', size: 20,color: ColorScheme.primary),
                     ],
                   ),
                   
@@ -344,7 +345,7 @@ class _ChefAddRecipesState extends State<ChefAddRecipes> {
                   padding: const EdgeInsets.only(left: 8),
                   child: Row(
                     children: [
-                      _buildTextField('',height: 120,maxLines: 10,width: 350,controller: _tipsController),
+                      _buildTextField('',context,TextInputType.text, height: 120,maxLines: 10,width: 350,controller: _tipsController),
                     ],
                   ),
                 )
@@ -357,11 +358,14 @@ class _ChefAddRecipesState extends State<ChefAddRecipes> {
     );
   }
   
-  Widget _buildTextField(String label, {int maxLines=1,double height=50,double width=100,required TextEditingController controller} ) {
+  Widget _buildTextField(String label,BuildContext context ,TextInputType keyboardType,{int maxLines=1,double height=50,double width=100,required TextEditingController controller} ) {
+        final ColorScheme=Theme.of(context).colorScheme;
+
     return SizedBox(
       height: height,
       width: width,
       child: TextFormField(
+        keyboardType: keyboardType,
          validator: (value) {
                 if (value == null || value.isEmpty) {
                   return 'Please enter a title';
@@ -370,10 +374,11 @@ class _ChefAddRecipesState extends State<ChefAddRecipes> {
               },
         controller: controller,
         cursorColor: Colors.teal,
-        style: TextStyle(color: Colors.white),
+        style: TextStyle(color: ColorScheme.primary),
         decoration: InputDecoration(
           filled: true,
-          fillColor: Color(0xff1D1B20),
+          fillColor:    Theme.of(context).cardColor,
+
           labelText: label,
           
     
@@ -385,7 +390,7 @@ class _ChefAddRecipesState extends State<ChefAddRecipes> {
           ),
           
           
-          labelStyle: GoogleFonts.poppins(textStyle: TextStyle(color: Color(0xffE0DBDB))),
+          labelStyle: GoogleFonts.poppins(textStyle: TextStyle(color: ColorScheme.primary)),
           border: OutlineInputBorder(borderRadius: BorderRadius.circular(10)),
         ),
         maxLines: maxLines,

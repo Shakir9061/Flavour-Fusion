@@ -7,14 +7,14 @@ import 'package:flavour_fusion/widgets/custom_text.dart';
 import 'package:flavour_fusion/widgets/custom_textformfield.dart';
 import 'package:image_picker/image_picker.dart';
 
-class Chef_editprofile extends StatefulWidget {
-  const Chef_editprofile({Key? key}) : super(key: key);
+class user_editprofile extends StatefulWidget {
+  const user_editprofile({Key? key}) : super(key: key);
 
   @override
-  State<Chef_editprofile> createState() => _Chef_editprofileState();
+  State<user_editprofile> createState() => _user_editprofileState();
 }
 
-class _Chef_editprofileState extends State<Chef_editprofile> {
+class _user_editprofileState extends State<user_editprofile> {
   final FirebaseAuth _auth = FirebaseAuth.instance;
   final FirebaseFirestore _firestore = FirebaseFirestore.instance;
   final FirebaseStorage _storage = FirebaseStorage.instance;
@@ -36,7 +36,7 @@ class _Chef_editprofileState extends State<Chef_editprofile> {
 
           String downloadUrl = await ref.getDownloadURL();
 
-          await _firestore.collection('ChefAuth').doc(user.uid).update({
+          await _firestore.collection('UserAuth').doc(user.uid).update({
             'profileImage': downloadUrl,
           });
 
@@ -56,7 +56,7 @@ class _Chef_editprofileState extends State<Chef_editprofile> {
   Stream<DocumentSnapshot> _getUserStream() {
     User? user = _auth.currentUser;
     if (user != null) {
-      return _firestore.collection('ChefAuth').doc(user.uid).snapshots();
+      return _firestore.collection('UserAuth').doc(user.uid).snapshots();
     }
     return Stream.empty();
   }
@@ -66,7 +66,7 @@ class _Chef_editprofileState extends State<Chef_editprofile> {
     if (user != null) {
       try {
        
-        await _firestore.collection('ChefAuth').doc(user.uid).update({
+        await _firestore.collection('UserAuth').doc(user.uid).update({
           'name': _nameController.text,
           
           'gender': _selectedGender,

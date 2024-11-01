@@ -38,21 +38,24 @@ class _Chef_ShoppinglistState extends State<Chef_Shoppinglist> {
     showDialog(
       context: context,
       builder: (BuildContext context) {
+             final ColorScheme = Theme.of(context).colorScheme;
+
         return AlertDialog(
-          title: Text('Add Item'),
+          title: Text('Add Item',style: TextStyle(color: ColorScheme.primary)),
           content: TextField(
             controller: _itemController,
+            style: TextStyle(color: ColorScheme.primary),
             decoration: InputDecoration(hintText: "Enter item name"),
           ),
           actions: <Widget>[
             TextButton(
-              child: Text('Cancel'),
+              child: Text('Cancel',style: TextStyle(color: ColorScheme.primary)),
               onPressed: () {
                 Navigator.of(context).pop();
               },
             ),
             TextButton(
-              child: Text('Add'),
+              child: Text('Add',style: TextStyle(color: Colors.teal),),
               onPressed: () {
                 _addItem(_itemController.text);
                 _itemController.clear();
@@ -67,16 +70,17 @@ class _Chef_ShoppinglistState extends State<Chef_Shoppinglist> {
 
   @override
   Widget build(BuildContext context) {
+     final ColorScheme = Theme.of(context).colorScheme;
     return Scaffold(
-      backgroundColor: Colors.black,
+      backgroundColor: Theme.of(context).scaffoldBackgroundColor,
       appBar: AppBar(
-        backgroundColor: Colors.black,
+        backgroundColor:  Theme.of(context).scaffoldBackgroundColor,
         automaticallyImplyLeading: false,
-        title: CustomText1(text: 'Shopping List', size: 20, weight: FontWeight.w500),
+        title: CustomText1(text: 'Shopping List', size: 20, weight: FontWeight.w500,color: ColorScheme.primary,),
         centerTitle: true,
         leading: IconButton(
           onPressed: () => Navigator.push(context,MaterialPageRoute(builder: (context) => Bottomnavigation_chef(),)),
-          icon: Icon(Icons.arrow_back, color: Colors.white),
+          icon: Icon(Icons.arrow_back, color: ColorScheme.primary),
         ),
       ),
       body: Column(
@@ -106,6 +110,7 @@ class _Chef_ShoppinglistState extends State<Chef_Shoppinglist> {
                       text: 'Shopping List is Empty',
                       size: 20,
                       weight: FontWeight.w500,
+                      color: ColorScheme.primary,
                     ),
                     SizedBox(
                       height: 10.h,
@@ -115,7 +120,7 @@ class _Chef_ShoppinglistState extends State<Chef_Shoppinglist> {
                       child: CustomText1(
                           text:
                               '  Start your shopping list by adding ingredients using the add button below.',
-                          size: 12,textAlign: TextAlign.center,),
+                          size: 12,textAlign: TextAlign.center,color: ColorScheme.primary,),
                     ),
                   ],
                 ),
@@ -130,9 +135,9 @@ class _Chef_ShoppinglistState extends State<Chef_Shoppinglist> {
                       return Padding(
                         padding: const EdgeInsets.only(top: 8.0),
                         child: ListTile(
-                          tileColor: Color(0xff1D1B20),
+                          tileColor: Theme.of(context).cardColor,
                           shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
-                          title: Text(item['name'], style:const TextStyle(color:Colors.white)),
+                          title: Text(item['name'], style: TextStyle(color:ColorScheme.primary)),
                           trailing: IconButton(
                             icon: Icon(Icons.delete, color: Colors.red),
                             onPressed: () {

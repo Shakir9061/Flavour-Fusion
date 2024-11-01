@@ -8,6 +8,7 @@ import 'package:flavour_fusion/widgets/custom_appbar.dart';
 import 'package:flavour_fusion/widgets/custom_text.dart';
 import 'package:flavour_fusion/Chef/model/view/Home/searchbyingredients.dart';
 import 'package:flavour_fusion/Chef/model/view/Home/searchbytime.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_typeahead/flutter_typeahead.dart';
 
 class Search_chef extends StatefulWidget {
@@ -43,48 +44,53 @@ class _Search_chefState extends State<Search_chef> {
       return [];
     }
   }
-Future<void> _showRecipesByCategory(String category) async {
-  try {
-    String lowercaseCategory = category.toLowerCase().trim();
-    print("Searching for category: $lowercaseCategory"); // Debug print
 
-    QuerySnapshot querySnapshot = await FirebaseFirestore.instance
-        .collection('recipes')
-        .where('category', isGreaterThanOrEqualTo: lowercaseCategory)
-.where('category', isLessThanOrEqualTo: lowercaseCategory + '\uf8ff')
-        .get();
+  Future<void> _showRecipesByCategory(String category) async {
+    try {
+      String lowercaseCategory = category.toLowerCase().trim();
+      print("Searching for category: $lowercaseCategory"); // Debug print
 
-    print("Number of recipes found: ${querySnapshot.docs.length}"); // Debug print
+      QuerySnapshot querySnapshot = await FirebaseFirestore.instance
+          .collection('recipes')
+          .where('category', isGreaterThanOrEqualTo: lowercaseCategory)
+          .where('category', isLessThanOrEqualTo: lowercaseCategory + '\uf8ff')
+          .get();
 
-    List<Recipe> recipes = querySnapshot.docs.map((doc) {
-      Map<String, dynamic> data = doc.data() as Map<String, dynamic>;
-      return Recipe.fromMap({...data, 'id': doc.id});
-    }).toList();
+      print(
+          "Number of recipes found: ${querySnapshot.docs.length}"); // Debug print
 
-    if (recipes.isEmpty) {
-      print("No recipes found for category: $lowercaseCategory"); // Debug print
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text('No recipes found for $category.')),
-      );
-      return;
-    }
+      List<Recipe> recipes = querySnapshot.docs.map((doc) {
+        Map<String, dynamic> data = doc.data() as Map<String, dynamic>;
+        return Recipe.fromMap({...data, 'id': doc.id});
+      }).toList();
 
-    Navigator.push(
-      context,
-      MaterialPageRoute(
-        builder: (context) => CategoryRecipesPage_chef(
-          category: category,
-          recipes: recipes,
+      if (recipes.isEmpty) {
+        print(
+            "No recipes found for category: $lowercaseCategory"); // Debug print
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(content: Text('No recipes found for $category.')),
+        );
+        return;
+      }
+
+      Navigator.push(
+        context,
+        MaterialPageRoute(
+          builder: (context) => CategoryRecipesPage_chef(
+            category: category,
+            recipes: recipes,
+          ),
         ),
-      ),
-    );
-  } catch (e) {
-    print("Error fetching recipes by category: $e");
-    ScaffoldMessenger.of(context).showSnackBar(
-      SnackBar(content: Text('Failed to load recipes for $category. Please try again.')),
-    );
+      );
+    } catch (e) {
+      print("Error fetching recipes by category: $e");
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+            content: Text(
+                'Failed to load recipes for $category. Please try again.')),
+      );
+    }
   }
-}
 
   final List<Map<String, String>> categories = [
     {"name": "Arabian", "image": "images/arabic.jpg"},
@@ -97,23 +103,31 @@ Future<void> _showRecipesByCategory(String category) async {
 
   @override
   Widget build(BuildContext context) {
+    final ColorScheme = Theme.of(context).colorScheme;
     return Scaffold(
-      backgroundColor: Colors.black,
+      backgroundColor: Theme.of(context).scaffoldBackgroundColor,
       appBar: AppBar(
-        backgroundColor: Colors.black,
+        backgroundColor: Theme.of(context).scaffoldBackgroundColor,
         automaticallyImplyLeading: false,
-        title: CustomText1(text: 'Search', size: 20, weight: FontWeight.w500),
+        title: CustomText1(
+          text: 'Search',
+          size: 20.spMin,
+          weight: FontWeight.w500,
+          color: ColorScheme.primary,
+        ),
         centerTitle: true,
         leading: IconButton(
-          onPressed: () => Navigator.pop(context),
-          icon: Icon(Icons.arrow_back, color: Colors.white),
+          onPressed: () => Navigator.push(
+              context,
+              MaterialPageRoute(
+                builder: (context) => Bottomnavigation_chef(),
+              )),
+          icon: Icon(Icons.arrow_back, color: ColorScheme.primary),
         ),
       ),
-
       body: SingleChildScrollView(
         child: Column(
           children: [
-           
             Center(
               child: Padding(
                 padding: const EdgeInsets.only(top: 10),
@@ -121,42 +135,43 @@ Future<void> _showRecipesByCategory(String category) async {
                   height: 50,
                   width: 320,
                   child: TypeAheadField(
-                 
-           textFieldConfiguration: TextFieldConfiguration(
-      controller: _searchController,
-      decoration: InputDecoration(
-        filled: true,
-        fillColor: Color(0xff1D1B20),
-        hintText: 'Search recipes...',
-        hintStyle: TextStyle(
-          color: Colors.white54,
-          fontSize: 16,
-        ),
-        prefixIcon: Icon(Icons.search, color: Colors.white),
-        contentPadding: EdgeInsets.symmetric(vertical: 15, horizontal: 20),
-         enabledBorder: OutlineInputBorder(
-      borderRadius: BorderRadius.circular(10),
-      borderSide: BorderSide(
-        color: Colors.white54, // Border color when not focused
-        width: 1,
-      ),
-    ),
-    
-    // Border when the text field is focused
-    focusedBorder: OutlineInputBorder(
-      borderRadius: BorderRadius.circular(10),
-      borderSide: BorderSide(
-        color: Colors.teal, // Border color when focused
-        width: 1,
-      ),
-    ),
-      ),
-      style: TextStyle(
-        color: Colors.white,
-        fontSize: 16,
-      ),
-    ),
-         
+                    textFieldConfiguration: TextFieldConfiguration(
+                      controller: _searchController,
+                      decoration: InputDecoration(
+                        filled: true,
+                        fillColor: Theme.of(context).cardColor,
+                        hintText: 'Search recipes...',
+                        hintStyle: TextStyle(
+                          color: ColorScheme.primary,
+                          fontSize: 16.spMin,
+                        ),
+                        prefixIcon:
+                            Icon(Icons.search, color: ColorScheme.primary),
+                        contentPadding:
+                            EdgeInsets.symmetric(vertical: 15, horizontal: 20),
+                        enabledBorder: OutlineInputBorder(
+                          borderRadius: BorderRadius.circular(10),
+                          borderSide: BorderSide(
+                            color: ColorScheme
+                                .primary, // Border color when not focused
+                            width: 1,
+                          ),
+                        ),
+
+                        // Border when the text field is focused
+                        focusedBorder: OutlineInputBorder(
+                          borderRadius: BorderRadius.circular(10),
+                          borderSide: BorderSide(
+                            color: Colors.teal, // Border color when focused
+                            width: 1,
+                          ),
+                        ),
+                      ),
+                      style: TextStyle(
+                        color: ColorScheme.primary,
+                        fontSize: 16,
+                      ),
+                    ),
                     suggestionsCallback: (pattern) async {
                       return await _getRecipeSuggestions(pattern);
                     },
@@ -164,18 +179,19 @@ Future<void> _showRecipesByCategory(String category) async {
                       Map<String, dynamic> data =
                           suggestion.data() as Map<String, dynamic>;
                       return ListTile(
-                       
-                        tileColor: Colors.black,
+                        tileColor: Theme.of(context).cardColor,
                         leading: CircleAvatar(
                           backgroundImage: NetworkImage(data['imageUrls'][0]),
                         ),
                         title: CustomText1(
                           text: data['title'] ?? 'No title',
                           size: 15,
+                          color: ColorScheme.primary,
                         ),
                         subtitle: CustomText1(
                           text: data['category'] ?? 'No category',
                           size: 12,
+                          color: ColorScheme.primary,
                         ),
                       );
                     },
@@ -207,14 +223,21 @@ Future<void> _showRecipesByCategory(String category) async {
                     width: 120,
                     child: InkWell(
                       onTap: () {
-                        Navigator.push(context, MaterialPageRoute(builder: (context) => Searchbyingredients_chef()));
+                        Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                                builder: (context) =>
+                                    Searchbyingredients_chef()));
                       },
                       child: Card(
-                        color:Color(0xff1D1B20),
+                        elevation: 10,
+                        color: Theme.of(context).cardColor,
                         child: Center(
                           child: CustomText1(
                               textAlign: TextAlign.center,
                               text: 'Search By Ingredients',
+                              color: ColorScheme.primary,
+                              weight: FontWeight.w600,
                               size: 12),
                         ),
                       ),
@@ -225,16 +248,22 @@ Future<void> _showRecipesByCategory(String category) async {
                     width: 120,
                     child: InkWell(
                       onTap: () {
-                        Navigator.push(context, MaterialPageRoute(builder: (context) => Searchbytimesuser()));
+                        Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                                builder: (context) => Searchbytime_chef()));
                       },
                       child: Card(
-                        color: Color(0xff1D1B20),
+                        elevation: 10,
+                        color: Theme.of(context).cardColor,
                         child: Center(
                           child: Padding(
                             padding: const EdgeInsets.only(left: 10, right: 10),
                             child: CustomText1(
                                 textAlign: TextAlign.center,
                                 text: 'Search By Time',
+                                weight: FontWeight.w600,
+                                color: ColorScheme.primary,
                                 size: 12),
                           ),
                         ),
@@ -252,6 +281,7 @@ Future<void> _showRecipesByCategory(String category) async {
                     text: 'Categories',
                     size: 24,
                     weight: FontWeight.w600,
+                    color: ColorScheme.primary,
                   ),
                 ],
               ),
@@ -269,31 +299,28 @@ Future<void> _showRecipesByCategory(String category) async {
                     childAspectRatio: 1),
                 itemBuilder: (context, index) {
                   return GestureDetector(
-                     onTap: () => _showRecipesByCategory(categories[index]['name']!),
+                    onTap: () =>
+                        _showRecipesByCategory(categories[index]['name']!),
                     child: ClipRRect(
-                      borderRadius: BorderRadius.circular(10),
-                      child: Stack(
-                        fit: StackFit.expand,
-                        children: [
-                          Opacity(
-                            opacity: 0.75,
-                            child: Image.asset(
+                        borderRadius: BorderRadius.circular(10),
+                        child: Stack(
+                          fit: StackFit.expand,
+                          alignment: Alignment.center,
+                          children: [
+                            Image.asset(
                               categories[index]["image"]!,
                               fit: BoxFit.cover,
                             ),
-                          ),
-                          Positioned(
-                            bottom: 70,
-                            left: 70,
-                            child: CustomText1(
-                              text: categories[index]['name']!,
-                              size: 18,
-                              weight: FontWeight.bold,
-                            ),
-                          )
-                        ],
-                      )
-                    ),
+                            Center(
+                              child: CustomText1(
+                                text: categories[index]['name']!,
+                                size: 18,
+                                color: Colors.white,
+                                weight: FontWeight.bold,
+                              ),
+                            )
+                          ],
+                        )),
                   );
                 },
               ),

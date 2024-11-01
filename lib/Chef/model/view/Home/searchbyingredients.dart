@@ -87,15 +87,10 @@ class _Searchbyingredients_chefState extends State<Searchbyingredients_chef> {
 
   @override
   Widget build(BuildContext context) {
+    final ColorScheme=Theme.of(context).colorScheme;
     return Scaffold(
-      backgroundColor: Colors.black,
-      appBar: PreferredSize(
-        preferredSize: Size.fromHeight(kToolbarHeight),
-        child: ClipRRect(
-          borderRadius: BorderRadius.only(bottomLeft: Radius.circular(20), bottomRight: Radius.circular(20)),
-          child: CustomAppBar(title: 'Search by Ingredients', weight: FontWeight.bold,)
-        )
-      ),
+      backgroundColor: Theme.of(context).scaffoldBackgroundColor,
+      appBar: CustomAppBar(title: 'Search by Ingredients', weight: FontWeight.bold,backgroundColor: Theme.of(context).scaffoldBackgroundColor,),
       body: Column(
         children: [
           Padding(
@@ -106,7 +101,7 @@ class _Searchbyingredients_chefState extends State<Searchbyingredients_chef> {
                   child: TextFormField(
                     controller: _ingredientController,
                     cursorColor: Colors.teal,
-                    style: GoogleFonts.poppins(textStyle: TextStyle(color: Colors.white)),
+                    style: GoogleFonts.poppins(textStyle: TextStyle(color: ColorScheme.primary)),
                     decoration: InputDecoration(
                       contentPadding: EdgeInsets.symmetric(vertical: 10, horizontal: 10),
                       focusedBorder: OutlineInputBorder(
@@ -114,7 +109,7 @@ class _Searchbyingredients_chefState extends State<Searchbyingredients_chef> {
                         borderRadius: BorderRadius.circular(10),
                       ),
                       hintText: 'Enter an ingredient',
-                      hintStyle: GoogleFonts.poppins(textStyle: TextStyle(fontSize: 15.sp, color: Colors.white60)),
+                      hintStyle: GoogleFonts.poppins(textStyle: TextStyle(fontSize: 15.sp, color: ColorScheme.primary)),
                       border: OutlineInputBorder(borderRadius: BorderRadius.circular(10)),
                     ),
                     onFieldSubmitted: _addIngredient,
@@ -123,7 +118,7 @@ class _Searchbyingredients_chefState extends State<Searchbyingredients_chef> {
                 SizedBox(width: 10),
                 ElevatedButton(
                   onPressed: () => _addIngredient(_ingredientController.text),
-                  child: Icon(Icons.add),
+                  child: Icon(Icons.add,color: Colors.white,),
                   style: ElevatedButton.styleFrom(backgroundColor: Colors.teal),
                 ),
               ],
@@ -138,7 +133,7 @@ class _Searchbyingredients_chefState extends State<Searchbyingredients_chef> {
           ),
           ElevatedButton(
             onPressed: _searchRecipes,
-            child: CustomText1(text: 'Search Recipes', size: 16),
+            child: CustomText1(text: 'Search Recipes', size: 16,color: Colors.white,),
             style: ElevatedButton.styleFrom(backgroundColor: Colors.teal),
           ),
           Expanded(
@@ -163,13 +158,13 @@ class _Searchbyingredients_chefState extends State<Searchbyingredients_chef> {
                       ),
                       title: Text(
                         recipe['title'], 
-                        style: TextStyle(color: Colors.white)
+                        style: TextStyle(color: ColorScheme.primary)
                       ),
                       subtitle: Text(
                         'Matched: ${getMatchedIngredients(recipe['ingredients'])}',
                         style: TextStyle(
-                          color: Colors.white70,
-                          fontStyle: FontStyle.italic,
+                          color: ColorScheme.primary,
+                          
                         ),
                       ),
                     );

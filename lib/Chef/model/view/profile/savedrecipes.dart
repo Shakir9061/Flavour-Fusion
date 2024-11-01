@@ -17,21 +17,22 @@ class SavedRecipesPage_chef extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final String? userId = FirebaseAuth.instance.currentUser?.uid;
+    final ColorScheme=Theme.of(context).colorScheme;
 
     return Scaffold(
-      backgroundColor: Colors.black,
+      backgroundColor:Theme.of(context).scaffoldBackgroundColor,
       appBar: AppBar(
-        backgroundColor: Colors.black,
+        backgroundColor:Theme.of(context).scaffoldBackgroundColor,
         automaticallyImplyLeading: false,
-        title: CustomText1(text: 'Saved Recipes', size: 20, weight: FontWeight.w500),
+        title: CustomText1(text: 'Saved Recipes', size: 20, weight: FontWeight.w500,color: ColorScheme.primary,),
         centerTitle: true,
         leading: IconButton(
           onPressed: () => Navigator.pop(context),
-          icon: Icon(Icons.arrow_back, color: Colors.white),
+          icon: Icon(Icons.arrow_back, color:  ColorScheme.primary),
         ),
       ),
       body: userId == null
-          ? Center(child: CustomText1(text: 'Please log in to view saved recipes', size: 15, color: Colors.white))
+          ? Center(child: CustomText1(text: 'Please log in to view saved recipes', size: 15, color:  ColorScheme.primary))
           : StreamBuilder<DocumentSnapshot>(
               stream: FirebaseFirestore.instance
                   .collection('userFavorites')
@@ -43,18 +44,18 @@ class SavedRecipesPage_chef extends StatelessWidget {
                 }
 
                 if (favoritesSnapshot.hasError) {
-                  return Center(child: CustomText1(text: 'Error: ${favoritesSnapshot.error}', size: 15, color: Colors.white));
+                  return Center(child: CustomText1(text: 'Error: ${favoritesSnapshot.error}', size: 15, color:  ColorScheme.primary));
                 }
 
                 if (!favoritesSnapshot.hasData || favoritesSnapshot.data == null) {
-                  return Center(child: CustomText1(text: 'No data available', size: 15, color: Colors.white));
+                  return Center(child: CustomText1(text: 'No data available', size: 15, color:  ColorScheme.primary));
                 }
 
                 Map<String, dynamic> favorites = favoritesSnapshot.data!.data() as Map<String, dynamic>? ?? {};
                 List<String> favoriteRecipeIds = favorites.keys.where((key) => favorites[key] == true).toList();
 
                 if (favoriteRecipeIds.isEmpty) {
-                  return Center(child: CustomText1(text: 'No saved recipes yet', size: 15, color: Colors.white));
+                  return Center(child: CustomText1(text: 'No saved recipes yet', size: 15, color:  ColorScheme.primary));
                 }
 
                 return StreamBuilder<QuerySnapshot>(
@@ -68,11 +69,11 @@ class SavedRecipesPage_chef extends StatelessWidget {
                     }
 
                     if (recipesSnapshot.hasError) {
-                      return Center(child: CustomText1(text: 'Error: ${recipesSnapshot.error}', size: 15, color: Colors.white));
+                      return Center(child: CustomText1(text: 'Error: ${recipesSnapshot.error}', size: 15, color:  ColorScheme.primary));
                     }
 
                     if (!recipesSnapshot.hasData || recipesSnapshot.data == null) {
-                      return Center(child: CustomText1(text: 'No recipes available', size: 15, color: Colors.white));
+                      return Center(child: CustomText1(text: 'No recipes available', size: 15, color:  ColorScheme.primary));
                     }
 
                     List<Recipe> savedRecipes = recipesSnapshot.data!.docs
@@ -90,14 +91,14 @@ class SavedRecipesPage_chef extends StatelessWidget {
                             padding: const EdgeInsets.symmetric(horizontal: 15,vertical: 8),
                             child: ListTile(
                               shape: RoundedRectangleBorder(borderRadius:BorderRadius.circular(10) ),
-                              tileColor: Color(0xff1D1B20),
+                              tileColor: Theme.of(context).cardColor,
                               title: Text(
                                 recipe.title,
-                                style: TextStyle(color: Colors.white, fontWeight: FontWeight.bold),
+                                style: TextStyle(color:  ColorScheme.primary, fontWeight: FontWeight.bold),
                               ),
                               subtitle: Text(
                                 recipe.category,
-                                style: TextStyle(color: Colors.white70),
+                                style: TextStyle(color:  ColorScheme.primary),
                               ),
                               leading: recipe.imageUrls.isNotEmpty
                                   ? ClipRRect(
@@ -124,7 +125,7 @@ class SavedRecipesPage_chef extends StatelessWidget {
                                       child: Icon(Icons.food_bank, size: 30, color: Colors.white),
                                     ),
                               trailing: IconButton(
-                                icon: Icon(Icons.delete, color: Colors.white),
+                                icon: Icon(Icons.delete, color:  ColorScheme.primary),
                                 onPressed: () => _removeFromSaved(userId!, recipeId),
                               ),
                               onTap: () {

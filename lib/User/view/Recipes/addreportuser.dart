@@ -4,16 +4,16 @@ import 'package:flutter/material.dart';
 import 'package:flavour_fusion/widgets/custom_text.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 
-class AddReport_chef extends StatefulWidget {
+class AddReport_user extends StatefulWidget {
    final String? reviewId;
   final String? reportedUserId;
-  const AddReport_chef({super.key, this. reportedUserId, this. reviewId,});
+  const AddReport_user({super.key, this. reportedUserId, this. reviewId,});
 
   @override
-  State<AddReport_chef> createState() => _AddReport_chefState();
+  State<AddReport_user> createState() => _AddReport_userState();
 }
 
-class _AddReport_chefState extends State<AddReport_chef> {
+class _AddReport_userState extends State<AddReport_user> {
    final TextEditingController _reportController = TextEditingController();
   bool _isSubmitting = false;
    Future<void> _submitReport() async {

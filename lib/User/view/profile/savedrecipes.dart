@@ -1,76 +1,151 @@
-import 'package:flavour_fusion/widgets/custom_text.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_auth/firebase_auth.dart';
+import 'package:flavour_fusion/Chef/model/chef_addrecipe_model.dart';
+import 'package:flavour_fusion/Chef/model/view/Recipe%20page/recipepage.dart';
+import 'package:flavour_fusion/User/view/Recipes/Recipedetailpageuser.dart';
 import 'package:flutter/material.dart';
+import 'package:flavour_fusion/widgets/custom_text.dart';
+import 'package:flutter/widgets.dart';
 
-import 'package:flutter_screenutil/flutter_screenutil.dart';
-import 'package:google_fonts/google_fonts.dart';
+class SavedRecipeuser extends StatelessWidget {
+  Future<void> _removeFromSaved(String userId, String recipeId) async {
+    await FirebaseFirestore.instance
+        .collection('userFavorites')
+        .doc(userId)
+        .update({recipeId: false});
+  }
 
-class SavedRecipesuser extends StatefulWidget {
-  const SavedRecipesuser({super.key});
-
-  @override
-  State<SavedRecipesuser> createState() => _SavedRecipesuserState();
-}
-
-class _SavedRecipesuserState extends State<SavedRecipesuser> {
   @override
   Widget build(BuildContext context) {
-    return  Scaffold(
-      backgroundColor: Colors.black,
-      body: SingleChildScrollView(
-        child: Center(
-          child: Padding(
-            padding: const EdgeInsets.symmetric(horizontal: 20),
-            child: Column(
-              children: [
-                 SizedBox(
-                      height: 20,
-                    ),
-                     SizedBox(
-                      height: 50,
-                      width: 350,
-                      child: TextFormField(
-                        style: GoogleFonts.poppins(textStyle: TextStyle(color: Colors.white,fontSize: 15)),
-                        cursorColor: Colors.teal,
-                        decoration: InputDecoration(
-                        prefixIcon: Icon(Icons.search,color: Color.fromARGB(255, 143, 135, 135),),
-                          hintText: 'Search Saved Recipes',
-                          
-                                           contentPadding: EdgeInsets.symmetric(horizontal: 15),
-                
-                          hintStyle: GoogleFonts.poppins(textStyle: TextStyle(color: Color.fromARGB(255, 143, 135, 135))),
-                         focusedBorder: OutlineInputBorder(borderSide: BorderSide(color: Colors.teal),borderRadius:BorderRadius.circular(10) ),
-                         
-                          border: OutlineInputBorder(borderRadius: BorderRadius.circular(10))),
-                      ),
-                    ),
-                    SizedBox(
-                      height: 15.h,
-                    ),
-                    Padding(
-                      padding: const EdgeInsets.only(left:  8.0),
-                      child: Row(
-                        children: [
-                          SizedBox(
-                            height: 140,
-                            width: 100,
-                            child: Card(
-                              color: Colors.black,
-                              child: Column(
-                                children: [
-                                  Image.asset('images/saved.png',fit: BoxFit.fill,),
-                                  CustomText1(text: 'Easy Chicken Curry', size: 12,weight: FontWeight.w500,)
-                                ],
-                              ),
-                            ),
-                          ),
-                        ],
-                      ),
-                    )
-              ],
-            ),
-          ),
+    final String? userId = FirebaseAuth.instance.currentUser?.uid;
+    final ColorScheme=Theme.of(context).colorScheme;
+
+    return Scaffold(
+      backgroundColor:Theme.of(context).scaffoldBackgroundColor,
+      appBar: AppBar(
+        backgroundColor:Theme.of(context).scaffoldBackgroundColor,
+        automaticallyImplyLeading: false,
+        title: CustomText1(text: 'Saved Recipes', size: 20, weight: FontWeight.w500,color: ColorScheme.primary,),
+        centerTitle: true,
+        leading: IconButton(
+          onPressed: () => Navigator.pop(context),
+          icon: Icon(Icons.arrow_back, color:  ColorScheme.primary),
         ),
       ),
+      body: userId == null
+          ? Center(child: CustomText1(text: 'Please log in to view saved recipes', size: 15, color:  ColorScheme.primary))
+          : StreamBuilder<DocumentSnapshot>(
+              stream: FirebaseFirestore.instance
+                  .collection('userFavorites')
+                  .doc(userId)
+                  .snapshots(),
+              builder: (context, favoritesSnapshot) {
+                if (favoritesSnapshot.connectionState == ConnectionState.waiting) {
+                  return Center(child: CircularProgressIndicator());
+                }
+
+                if (favoritesSnapshot.hasError) {
+                  return Center(child: CustomText1(text: 'Error: ${favoritesSnapshot.error}', size: 15, color:  ColorScheme.primary));
+                }
+
+                if (!favoritesSnapshot.hasData || favoritesSnapshot.data == null) {
+                  return Center(child: CustomText1(text: 'No data available', size: 15, color:  ColorScheme.primary));
+                }
+
+                Map<String, dynamic> favorites = favoritesSnapshot.data!.data() as Map<String, dynamic>? ?? {};
+                List<String> favoriteRecipeIds = favorites.keys.where((key) => favorites[key] == true).toList();
+
+                if (favoriteRecipeIds.isEmpty) {
+                  return Center(child: CustomText1(text: 'No saved recipes yet', size: 15, color:  ColorScheme.primary));
+                }
+
+                return StreamBuilder<QuerySnapshot>(
+                  stream: FirebaseFirestore.instance
+                      .collection('recipes')
+                      .where(FieldPath.documentId, whereIn: favoriteRecipeIds)
+                      .snapshots(),
+                  builder: (context, recipesSnapshot) {
+                    if (recipesSnapshot.connectionState == ConnectionState.waiting) {
+                      return Center(child: CircularProgressIndicator());
+                    }
+
+                    if (recipesSnapshot.hasError) {
+                      return Center(child: CustomText1(text: 'Error: ${recipesSnapshot.error}', size: 15, color:  ColorScheme.primary));
+                    }
+
+                    if (!recipesSnapshot.hasData || recipesSnapshot.data == null) {
+                      return Center(child: CustomText1(text: 'No recipes available', size: 15, color:  ColorScheme.primary));
+                    }
+
+                    List<Recipe> savedRecipes = recipesSnapshot.data!.docs
+                        .map((doc) => Recipe.fromMap(doc.data() as Map<String, dynamic>))
+                        .toList();
+
+                    return Padding(
+                      padding: const EdgeInsets.only(top: 30),
+                      child: ListView.builder(
+                        itemCount: savedRecipes.length,
+                        itemBuilder: (context, index) {
+                          Recipe recipe = savedRecipes[index];
+                          String recipeId = recipesSnapshot.data!.docs[index].id;
+                          return Padding(
+                            padding: const EdgeInsets.symmetric(horizontal: 15,vertical: 8),
+                            child: ListTile(
+                              shape: RoundedRectangleBorder(borderRadius:BorderRadius.circular(10) ),
+                              tileColor: Theme.of(context).cardColor,
+                              title: Text(
+                                recipe.title,
+                                style: TextStyle(color:  ColorScheme.primary, fontWeight: FontWeight.bold),
+                              ),
+                              subtitle: Text(
+                                recipe.category,
+                                style: TextStyle(color:  ColorScheme.primary),
+                              ),
+                              leading: recipe.imageUrls.isNotEmpty
+                                  ? ClipRRect(
+                                      borderRadius: BorderRadius.circular(8),
+                                      child: Image.network(
+                                        recipe.imageUrls[0],
+                                        width: 50,
+                                        height: 50,
+                                        fit: BoxFit.cover,
+                                        errorBuilder: (context, error, stackTrace) {
+                                          return Container(
+                                            width: 50,
+                                            height: 50,
+                                            color: Colors.grey[800],
+                                            child: Icon(Icons.error, size: 30, color: Colors.white),
+                                          );
+                                        },
+                                      ),
+                                    )
+                                  : Container(
+                                      width: 50,
+                                      height: 50,
+                                      color: Colors.grey[800],
+                                      child: Icon(Icons.food_bank, size: 30, color: Colors.white),
+                                    ),
+                              trailing: IconButton(
+                                icon: Icon(Icons.delete, color:  ColorScheme.primary),
+                                onPressed: () => _removeFromSaved(userId!, recipeId),
+                              ),
+                              onTap: () {
+                                Navigator.push(
+                                  context,
+                                  MaterialPageRoute(
+                                    builder: (context) => RecipeDetailPage_user(recipe: recipe, recipeId: recipeId),
+                                  ),
+                                );
+                              },
+                            ),
+                          );
+                        },
+                      ),
+                    );
+                  },
+                );
+              },
+            ),
     );
   }
 }

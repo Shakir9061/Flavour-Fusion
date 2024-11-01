@@ -1,8 +1,8 @@
 import 'package:flavour_fusion/widgets/custom_text.dart';
 import 'package:flutter/material.dart';
 
-class Chef_about extends StatelessWidget {
-  const Chef_about({super.key});
+class user_about extends StatelessWidget {
+  const user_about({super.key});
 
   @override
   Widget build(BuildContext context) {

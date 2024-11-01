@@ -73,6 +73,8 @@ class _ChefLoginState extends State<ChefLogin> {
                                 BorderSide(color: Colors.teal, width: 1.w),
                             borderRadius: BorderRadius.circular(10.r),
                           ),
+                            errorBorder: OutlineInputBorder(borderSide: BorderSide(color: Colors.red),borderRadius: BorderRadius.circular(10)),
+                          enabledBorder: OutlineInputBorder(borderSide: BorderSide(color: Colors.white,),borderRadius: BorderRadius.circular(10)),
                           label: CustomText1(text: 'E-mail', size: 13.dg),
                           border: OutlineInputBorder(
                               borderRadius: BorderRadius.circular(10.r))),
@@ -101,6 +103,8 @@ class _ChefLoginState extends State<ChefLogin> {
                                   BorderSide(color: Colors.teal, width: 1.w),
                               borderRadius: BorderRadius.circular(10.r),
                             ),
+                              errorBorder: OutlineInputBorder(borderSide: BorderSide(color: Colors.red),borderRadius: BorderRadius.circular(10)),
+                          enabledBorder: OutlineInputBorder(borderSide: BorderSide(color: Colors.white,),borderRadius: BorderRadius.circular(10)),
                             label: CustomText1(text: 'Password', size: 13.sp),
                             border: OutlineInputBorder(
                                 borderRadius: BorderRadius.circular(10.r))),

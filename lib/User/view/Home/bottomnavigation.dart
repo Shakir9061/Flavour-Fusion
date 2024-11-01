@@ -13,9 +13,10 @@ class Bottomnavigation_user extends StatefulWidget {
 
 class _Bottomnavigation_userState extends State<Bottomnavigation_user> {
   var selectedindex=0;
-  List Pages=[Homeuser(),Serach1(),Shoppinglist()];
+  List Pages=[Homeuser(),search_user(),Shoppinglist_user()];
   @override
   Widget build(BuildContext context) {
+    final ColorScheme=Theme.of(context).colorScheme;
     return  Scaffold(
       body:Pages.elementAt(selectedindex),
       bottomNavigationBar: BottomNavigationBar(items: [
@@ -23,11 +24,12 @@ class _Bottomnavigation_userState extends State<Bottomnavigation_user> {
           BottomNavigationBarItem(icon: Icon(Icons.search,),label:'search'),
             BottomNavigationBarItem(icon: Icon(Icons.menu,),label:'Shopping list')
       ],
-      backgroundColor: Color(0xff313131),
+      backgroundColor: Theme.of(context).cardColor,
       selectedItemColor:Colors.teal,
-      unselectedItemColor:Colors.white ,
+      unselectedItemColor:ColorScheme.primary,
       currentIndex: selectedindex,
       type: BottomNavigationBarType.fixed,
+     
       
       onTap: (value) {
         setState(() {

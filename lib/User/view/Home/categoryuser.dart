@@ -1,14 +1,15 @@
 import 'package:flavour_fusion/Chef/model/chef_addrecipe_model.dart';
 import 'package:flavour_fusion/Chef/model/view/Recipe%20page/recipepage.dart';
+import 'package:flavour_fusion/User/view/Recipes/Recipedetailpageuser.dart';
 import 'package:flavour_fusion/widgets/custom_appbar.dart';
 import 'package:flavour_fusion/widgets/custom_text.dart';
 import 'package:flutter/material.dart';
 
-class CategoryRecipesPage_chef extends StatelessWidget {
+class CategoryRecipesPage_user extends StatelessWidget {
   final String category;
   final List<Recipe> recipes;
 
-  const CategoryRecipesPage_chef({
+  const CategoryRecipesPage_user({
     Key? key,
     required this.category,
     required this.recipes,
@@ -72,7 +73,7 @@ class CategoryRecipesPage_chef extends StatelessWidget {
                       Navigator.push(
                         context,
                         MaterialPageRoute(
-                          builder: (context) => RecipeDetailPage_chef(
+                          builder: (context) => RecipeDetailPage_user(
                             recipe: recipe,
                             recipeId: recipe.id!,
                           ),

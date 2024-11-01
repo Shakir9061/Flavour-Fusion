@@ -1,12 +1,11 @@
 import 'package:firebase_core/firebase_core.dart';
+import 'package:flavour_fusion/common/theme/themeprovider.dart';
 import 'package:flavour_fusion/firebase_options.dart';
-import 'package:flavour_fusion/otp/phoneauthpage.dart';
-import 'package:flavour_fusion/sample%20media/upload.dart';
-
 import 'package:flutter/material.dart';
 import 'package:flavour_fusion/common/SplashScreen/splash1.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:provider/provider.dart';
 
 
 void main()async {
@@ -19,7 +18,12 @@ void main()async {
   await Firebase.initializeApp(
     options: DefaultFirebaseOptions.currentPlatform,
   );
-  runApp(const MyApp());
+    final themeProvider = ThemeProvider();
+  await themeProvider.loadThemeMode();
+
+  runApp(
+    ChangeNotifierProvider(create: (context) => ThemeProvider(),child: const MyApp(),),
+    );
 }
 
 class MyApp extends StatelessWidget {
@@ -33,11 +37,7 @@ class MyApp extends StatelessWidget {
       builder: (context, child) =>    MaterialApp(
         debugShowCheckedModeBanner: false,
         title: 'Flutter Demo',
-        theme: ThemeData(
-       
-          colorScheme: ColorScheme.fromSeed(seedColor: Colors.deepPurple),
-          useMaterial3: true,
-        ),
+        theme:  Provider.of<ThemeProvider>(context).themeData,
         home:  const Splash1()
         
        

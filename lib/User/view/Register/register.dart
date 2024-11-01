@@ -57,7 +57,7 @@ class _RegisterUserState extends State<RegisterUser> {
                 Padding(
                   padding: const EdgeInsets.only(top: 60),
                   child: SizedBox(
-                    height: 50,
+                 
                     width: 320,
                     child: TextFormField(
                       controller: _namecontroller,
@@ -74,6 +74,8 @@ class _RegisterUserState extends State<RegisterUser> {
                   borderSide: BorderSide(color: Colors.teal, width: 1),
                   borderRadius: BorderRadius.circular(10),
                 ),
+                  errorBorder: OutlineInputBorder(borderSide: BorderSide(color: Colors.red),borderRadius: BorderRadius.circular(10)),
+                          enabledBorder: OutlineInputBorder(borderSide: BorderSide(color: Colors.white,),borderRadius: BorderRadius.circular(10)),
                           label: CustomText1(text: 'Name', size: 13),
                           border: OutlineInputBorder(
                           
@@ -117,7 +119,7 @@ class _RegisterUserState extends State<RegisterUser> {
                 Padding(
                   padding: const EdgeInsets.only(top: 15),
                   child: SizedBox(
-                    height: 50,
+                    
                     width: 320,
                     child: TextFormField(
                       controller: _emailcontroller,
@@ -134,6 +136,8 @@ class _RegisterUserState extends State<RegisterUser> {
                   borderSide: BorderSide(color: Colors.teal, width: 1),
                   borderRadius: BorderRadius.circular(10),
                 ),
+                  errorBorder: OutlineInputBorder(borderSide: BorderSide(color: Colors.red),borderRadius: BorderRadius.circular(10)),
+                          enabledBorder: OutlineInputBorder(borderSide: BorderSide(color: Colors.white,),borderRadius: BorderRadius.circular(10)),
                           label: CustomText1(text: 'E-mail', size: 13),
                           border: OutlineInputBorder(
                           
@@ -145,7 +149,7 @@ class _RegisterUserState extends State<RegisterUser> {
                 Padding(
                   padding: const EdgeInsets.only(top: 15),
                   child: SizedBox(
-                    height: 50,
+                    
                     width: 320,
                     child: TextFormField(
                       controller: _passwordcontroller,
@@ -162,8 +166,8 @@ class _RegisterUserState extends State<RegisterUser> {
                   borderSide: BorderSide(color: Colors.teal, width: 1),
                   borderRadius: BorderRadius.circular(10),
                 ),
-                enabledBorder: OutlineInputBorder(borderRadius: BorderRadius.circular(10),borderSide: BorderSide(width: 0.2,color: Colors.red)) ,
-                errorBorder: OutlineInputBorder(borderRadius: BorderRadius.circular(10),borderSide: BorderSide(width: 0.2,color: Colors.red)),
+                enabledBorder: OutlineInputBorder(borderRadius: BorderRadius.circular(10),borderSide: BorderSide(color: Colors.white)) ,
+                errorBorder: OutlineInputBorder(borderRadius: BorderRadius.circular(10),borderSide: BorderSide(color: Colors.red)),
                 focusedErrorBorder: OutlineInputBorder(borderRadius: BorderRadius.circular(10),borderSide: BorderSide(width: 0.2,color: Colors.red)),
                           label: CustomText1(text: 'Password', size: 13),
                           border: OutlineInputBorder(

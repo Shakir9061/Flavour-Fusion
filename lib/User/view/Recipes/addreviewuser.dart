@@ -6,15 +6,15 @@ import 'package:flavour_fusion/widgets/custom_text.dart';
 import 'package:flutter_rating_bar/flutter_rating_bar.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 
-class Addreview_chef extends StatefulWidget {
+class Addreview_user extends StatefulWidget {
   final String recipeId;
-  const Addreview_chef({Key? key, required this.recipeId}) : super(key: key);
+  const Addreview_user({Key? key, required this.recipeId}) : super(key: key);
 
   @override
-  State<Addreview_chef> createState() => _Addreview_chefState();
+  State<Addreview_user> createState() => _Addreview_userState();
 }
 
-class _Addreview_chefState extends State<Addreview_chef> {
+class _Addreview_userState extends State<Addreview_user> {
   final TextEditingController _reviewController = TextEditingController();
   double _rating = 0;
   final FirebaseAuth _auth = FirebaseAuth.instance;
@@ -129,7 +129,7 @@ class _Addreview_chefState extends State<Addreview_chef> {
       }
 
       DocumentSnapshot userDoc = await FirebaseFirestore.instance
-          .collection('ChefAuth')
+          .collection('UserAuth')
           .doc(currentUser.uid)
           .get();
 

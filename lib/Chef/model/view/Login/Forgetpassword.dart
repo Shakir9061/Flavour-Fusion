@@ -2,7 +2,6 @@ import 'package:flavour_fusion/Chef/controller/forgetpassword_controller.dart';
 import 'package:flavour_fusion/Chef/model/chef_forgetpass_model.dart';
 import 'package:flutter/material.dart';
 import 'package:flavour_fusion/widgets/custom_text.dart';
-import 'package:flavour_fusion/Chef/model/view/Login/updatepassword.dart';
 import 'package:google_fonts/google_fonts.dart';
 
 class ChefForgetPassword extends StatefulWidget {

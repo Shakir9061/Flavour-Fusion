@@ -1,240 +1,25 @@
-import 'dart:io';
-import 'package:flavour_fusion/Chef/model/view/Recipe%20page/review.dart';
-import 'package:flavour_fusion/Chef/model/view/addrecipe/addrecipe.dart';
-import 'package:flutter/material.dart';
-import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:firebase_auth/firebase_auth.dart';
+
 import 'package:carousel_slider/carousel_slider.dart';
-import 'package:video_player/video_player.dart';
-import 'package:google_fonts/google_fonts.dart';
-import 'package:flavour_fusion/widgets/custom_appbar.dart';
-import 'package:flavour_fusion/widgets/custom_text.dart';
-import 'package:flavour_fusion/Chef/model/chef_addrecipe_model.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:dots_indicator/dots_indicator.dart';
+import 'package:flavour_fusion/Chef/model/chef_addrecipe_model.dart';
+import 'package:flavour_fusion/User/view/Recipes/Reviewuser.dart';
+import 'package:flavour_fusion/widgets/custom_text.dart';
+import 'package:flutter/material.dart';
+import 'package:google_fonts/google_fonts.dart';
+import 'package:video_player/video_player.dart';
 
-
-class ChefViewRecipes extends StatefulWidget {
-  const ChefViewRecipes({Key? key}) : super(key: key);
-
-  @override
-  _ChefViewRecipesState createState() => _ChefViewRecipesState();
-}
-
-class _ChefViewRecipesState extends State<ChefViewRecipes> {
-  late Stream<QuerySnapshot> _recipesStream;
-
-  @override
-  void initState() {
-    super.initState();
-    final user = FirebaseAuth.instance.currentUser;
-    if (user != null) {
-      _recipesStream = FirebaseFirestore.instance
-          .collection('recipes')
-          .doc(user.uid)
-          .collection('recipes_list')
-          .orderBy('timestamp', descending: true)
-          .snapshots();
-    }
-  }
-
-  @override
-  Widget build(BuildContext context) {
-    final ColorScheme=Theme.of(context).colorScheme;
-    return Scaffold(
-      backgroundColor: Theme.of(context).scaffoldBackgroundColor,
-      appBar: AppBar(
-        backgroundColor: Theme.of(context).scaffoldBackgroundColor,
-        automaticallyImplyLeading: false,
-        title: CustomText1(text: 'My Recipes', size: 20, weight: FontWeight.w500,color: ColorScheme.primary,),
-        centerTitle: true,
-        leading: IconButton(
-          onPressed: () => Navigator.pop(context),
-          icon: Icon(Icons.arrow_back, color: ColorScheme.primary),
-        ),
-      ),
-      body: StreamBuilder<QuerySnapshot>(
-        stream: _recipesStream,
-        builder: (context, snapshot) {
-          if (snapshot.hasError) {
-            return Center(child: Text('Something went wrong'));
-          }
-
-          if (snapshot.connectionState == ConnectionState.waiting) {
-            return Center(child: CircularProgressIndicator());
-          }
-
-          if (snapshot.data!.docs.isEmpty) {
-            return Center(child: Text('No recipes found'));
-          }
-
-          return Padding(
-            padding: const EdgeInsets.symmetric(horizontal: 10.0),
-            child: ListView.builder(
-              itemCount: snapshot.data!.docs.length,
-              itemBuilder: (context, index) {
-                var doc = snapshot.data!.docs[index];
-                var recipeData = doc.data() as Map<String, dynamic>;
-                Recipe recipe = Recipe.fromMap(recipeData);
-                return RecipeCard(
-                  recipe: recipe,
-                  recipeId: doc.id,
-                  onDelete: () => _deleteRecipe(doc.id),
-                );
-              },
-            ),
-          );
-        },
-      ),
-      floatingActionButton: Padding(
-        padding: const EdgeInsets.all(10.0),
-        child: FloatingActionButton(
-          onPressed: () {
-            Navigator.push(context, MaterialPageRoute(builder: (context) => ChefAddRecipes()));
-          },
-          child: Icon(Icons.add, size: 35, color: Colors.white),
-          backgroundColor: Colors.teal,
-        ),
-      ),
-    );
-  }
-
-void _deleteRecipe(String recipeId) async {
-  final user = FirebaseAuth.instance.currentUser;
-  if (user != null) {
-    try {
-      // Create a batch to perform multiple delete operations
-      WriteBatch batch = FirebaseFirestore.instance.batch();
-
-      // Reference to the recipe in chef's personal list
-      DocumentReference chefRecipeRef = FirebaseFirestore.instance
-          .collection('recipes')
-          .doc(user.uid)
-          .collection('recipes_list')
-          .doc(recipeId);
-
-      // Reference to the recipe in main recipes collection
-      DocumentReference mainRecipeRef = FirebaseFirestore.instance
-          .collection('recipes')
-          .doc(recipeId);
-
-      // Add delete operations to batch
-      batch.delete(chefRecipeRef);
-      batch.delete(mainRecipeRef);
-
-      // Commit the batch
-      await batch.commit();
-
-      // Delete associated reviews if they exist
-      // QuerySnapshot reviewsSnapshot = await FirebaseFirestore.instance
-      //     .collection('recipes')
-      //     .doc(recipeId)
-      //     .collection('reviews')
-      //     .get();
-
-      // if (reviewsSnapshot.docs.isNotEmpty) {
-      //   WriteBatch reviewsBatch = FirebaseFirestore.instance.batch();
-      //   for (var doc in reviewsSnapshot.docs) {
-      //     reviewsBatch.delete(doc.reference);
-      //   }
-      //   await reviewsBatch.commit();
-      // }
-
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(
-          content: Text('Recipe deleted successfully'),
-          backgroundColor: Colors.green,
-        ),
-      );
-    } catch (e) {
-      print('Error deleting recipe: $e');
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(
-          content: Text('Failed to delete recipe'),
-          backgroundColor: Colors.red,
-        ),
-      );
-    }
-  }
-}
-}
-
-class RecipeCard extends StatelessWidget {
-  final Recipe recipe;
-  final String recipeId;
-  final VoidCallback onDelete;
-
-  const RecipeCard({
-    Key? key,
-    required this.recipe,
-    required this.recipeId,
-    required this.onDelete,
-  }) : super(key: key);
-
-  @override
-  Widget build(BuildContext context) {
-    final ColorScheme=Theme.of(context).colorScheme;
-    return Padding(
-      padding: const EdgeInsets.only(top: 5),
-      child: ListTile(
-        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
-        tileColor: Theme.of(context).cardColor,
-        title: CustomText1(text: recipe.title, size: 14,color: ColorScheme.primary),
-        subtitle: CustomText1(text: recipe.category, size: 12,color: ColorScheme.primary),
-        leading: recipe.imageUrls.isNotEmpty
-            ? Image.network(recipe.imageUrls[0], width: 50, height: 50, fit: BoxFit.cover)
-            : Icon(Icons.image, color: Colors.white, size: 50),
-        trailing: IconButton(
-          icon: Icon(Icons.delete, color: ColorScheme.primary),
-          onPressed: () {
-            showDialog(
-              context: context,
-              builder: (BuildContext context) {
-                return AlertDialog(
-                  backgroundColor:Theme.of(context).cardColor ,
-                  title: CustomText1(text:  "Delete Recipe",size: 16,weight: FontWeight.w600,color: ColorScheme.primary,),
-                  content: CustomText1(text:  "Are you sure you want to delete this recipe?",size: 13,color: ColorScheme.primary),
-                  actions: <Widget>[
-                    TextButton(
-                      child: Text("Cancel",style: TextStyle(color: ColorScheme.primary),),
-                      onPressed: () => Navigator.of(context).pop(),
-                    ),
-                    TextButton(
-                      child: Text("Delete",style: TextStyle(color: ColorScheme.primary)),
-                      onPressed: () {
-                        Navigator.of(context).pop();
-                        onDelete();
-                      },
-                    ),
-                  ],
-                );
-              },
-            );
-          },
-        ),
-        onTap: () {
-          Navigator.push(
-            context,
-            MaterialPageRoute(
-              builder: (context) => RecipeDetailPage_chef(recipe: recipe, recipeId: recipeId),
-            ),
-          );
-        },
-      ),
-    );
-  }
-}
-
-class RecipeDetailPage_chef extends StatefulWidget {
+class RecipeDetailPage_user extends StatefulWidget {
   final Recipe recipe;
   final String recipeId;
 
-  const RecipeDetailPage_chef({Key? key, required this.recipe, required this.recipeId}) : super(key: key);
+  const RecipeDetailPage_user({Key? key, required this.recipe, required this.recipeId}) : super(key: key);
 
   @override
-  _RecipeDetailPage_chefState createState() => _RecipeDetailPage_chefState();
+  _RecipeDetailPage_userState createState() => _RecipeDetailPage_userState();
 }
 
-class _RecipeDetailPage_chefState extends State<RecipeDetailPage_chef> {
+class _RecipeDetailPage_userState extends State<RecipeDetailPage_user> {
   VideoPlayerController? _videoPlayerController;
   bool _isVideoInitialized = false;
   bool _hasVideoError = false;
@@ -249,33 +34,33 @@ class _RecipeDetailPage_chefState extends State<RecipeDetailPage_chef> {
     if (widget.recipe.videoUrl != null) {
       _initializeVideoPlayer();
     }
-    _loadChefData();
+    // _loadChefData();
   }
- Future<void> _loadChefData() async {
-    try {
-      setState(() => _isLoadingChef = true);
+//  Future<void> _loadChefData() async {
+//     try {
+//       setState(() => _isLoadingChef = true);
       
-      final chefDoc = await FirebaseFirestore.instance
-          .collection('ChefAuth')
-          .doc(widget.recipe.chefId)
-          .get();
+//       final chefDoc = await FirebaseFirestore.instance
+//           .collection('UserAuth')
+//           .doc(widget.recipe.chefId)
+//           .get();
 
-      if (chefDoc.exists) {
-        setState(() {
-          _chefData = chefDoc.data();
-          _isLoadingChef = false;
-        });
-      } else {
-        setState(() {
-          _chefData = null;
-          _isLoadingChef = false;
-        });
-      }
-    } catch (e) {
-      print('Error loading chef data: $e');
-      setState(() => _isLoadingChef = false);
-    }
-  }
+//       if (chefDoc.exists) {
+//         setState(() {
+//           _chefData = chefDoc.data();
+//           _isLoadingChef = false;
+//         });
+//       } else {
+//         setState(() {
+//           _chefData = null;
+//           _isLoadingChef = false;
+//         });
+//       }
+//     } catch (e) {
+//       print('Error loading chef data: $e');
+//       setState(() => _isLoadingChef = false);
+//     }
+//   }
   Future<void> _initializeVideoPlayer() async {
     try {
       _videoPlayerController = VideoPlayerController.networkUrl(Uri.parse(widget.recipe.videoUrl!));
@@ -349,7 +134,7 @@ class _RecipeDetailPage_chefState extends State<RecipeDetailPage_chef> {
                       child: _buildRecipeDetails(context),
                     ),
                   ),
-                  ReviewTab_chef(recipeId: widget.recipeId),
+                  ReviewTab_user(recipeId: widget.recipeId),
                 ],
               ),
             ),

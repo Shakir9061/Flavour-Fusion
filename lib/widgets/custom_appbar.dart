@@ -25,13 +25,14 @@ class CustomAppBar extends StatelessWidget implements PreferredSizeWidget {
 
   @override
   Widget build(BuildContext context) {
+    final ColorScheme=Theme.of(context).colorScheme;
     return AppBar(
       title: Text(
         title,
         style: GoogleFonts.poppins(
           textStyle: TextStyle(
             fontWeight: weight,
-            color: Colors.black,
+            color: ColorScheme.primary,
             fontSize: size ?? 20.sp,
           ),
         ),

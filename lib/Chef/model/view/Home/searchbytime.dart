@@ -7,14 +7,14 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 
-class Searchbytimesuser extends StatefulWidget {
-  const Searchbytimesuser({Key? key}) : super(key: key);
+class Searchbytime_chef extends StatefulWidget {
+  const Searchbytime_chef({Key? key}) : super(key: key);
 
   @override
-  State<Searchbytimesuser> createState() => _SearchbyitimesuserState();
+  State<Searchbytime_chef> createState() => _SearchbyitimesuserState();
 }
 
-class _SearchbyitimesuserState extends State<Searchbytimesuser> {
+class _SearchbyitimesuserState extends State<Searchbytime_chef> {
   final TextEditingController _searchController = TextEditingController();
   List<Map<String, dynamic>> _searchResults = [];
 
@@ -43,20 +43,13 @@ class _SearchbyitimesuserState extends State<Searchbytimesuser> {
 
   @override
   Widget build(BuildContext context) {
+    final colorScheme = Theme.of(context).colorScheme;
     return Scaffold(
-      backgroundColor: Colors.black,
-      appBar: PreferredSize(
-        preferredSize: Size.fromHeight(kToolbarHeight),
-        child: ClipRRect(
-          borderRadius: BorderRadius.only(
-            bottomLeft: Radius.circular(20),
-            bottomRight: Radius.circular(20),
-          ),
-          child: CustomAppBar(
-            title: 'Search by Time',
-            weight: FontWeight.bold,
-          ),
-        ),
+      backgroundColor: Theme.of(context).scaffoldBackgroundColor,
+      appBar: CustomAppBar(
+        title: 'Search by Time',
+        weight: FontWeight.bold,
+        backgroundColor:Theme.of(context).scaffoldBackgroundColor ,
       ),
       body: Column(
         children: [
@@ -69,7 +62,7 @@ class _SearchbyitimesuserState extends State<Searchbytimesuser> {
                 controller: _searchController,
                 cursorColor: Colors.teal,
                 style: GoogleFonts.poppins(
-                  textStyle: TextStyle(color: Colors.white),
+                  textStyle: TextStyle(color: colorScheme.primary),
                 ),
                 decoration: InputDecoration(
                   contentPadding:
@@ -78,9 +71,9 @@ class _SearchbyitimesuserState extends State<Searchbytimesuser> {
                     borderSide: BorderSide(color: Colors.teal, width: 1),
                     borderRadius: BorderRadius.circular(10),
                   ),
-                  hintText: 'Enter cooking time (e.g., 30 mins)',
+                  hintText: 'Enter cooking time',
                   hintStyle: GoogleFonts.poppins(
-                    textStyle: TextStyle(fontSize: 15.sp, color: Colors.white60),
+                    textStyle: TextStyle(fontSize: 15.sp, color:colorScheme.primary ),
                   ),
                   border: OutlineInputBorder(
                     borderRadius: BorderRadius.circular(10),
@@ -110,13 +103,13 @@ class _SearchbyitimesuserState extends State<Searchbytimesuser> {
                     leading:Image.network(recipe['imageUrls'][0],height: 50,width: 50,fit: BoxFit.cover,),
                   title: Text(
                     recipe['title'] ?? 'Untitled Recipe',
-                    style: TextStyle(color: Colors.white),
+                    style: TextStyle(color: colorScheme.primary),
                   ),
                   subtitle: Text(
                     'Cooking time: ${recipe['time']}',
-                    style: TextStyle(color: Colors.white70),
+                    style: TextStyle(color: colorScheme.primary),
                   ),
-                  // You can add more details or onTap functionality here
+                 
                 );
               },
             ),

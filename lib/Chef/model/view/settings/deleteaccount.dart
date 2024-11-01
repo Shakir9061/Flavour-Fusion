@@ -27,20 +27,22 @@ Future<void> deleteAccount() async {
 }
   @override
   Widget build(BuildContext context) {
+        final ColorScheme=Theme.of(context).colorScheme;
+
     return AlertDialog(
-      backgroundColor:  Color(0xff313131),
+      backgroundColor:  Theme.of(context).cardColor,
  title: CustomText1(text: 'Delete Your Account', size: 18,color: Colors.red,weight: FontWeight.w600,),
  content: Column(
   mainAxisSize: MainAxisSize.min,
    children: [
-     CustomText1(text: 'are you sure you want to delete your account.', size: 14.sp,weight: FontWeight.w500,),
-      CustomText1(text: 'NB : if you delete your account you won’t be able to recover it.', size: 14.sp,weight: FontWeight.w500,),
+     CustomText1(text: 'are you sure you want to delete your account.', size: 14.sp,weight: FontWeight.w500,color: ColorScheme.primary,),
+      CustomText1(text: 'NB : if you delete your account you won’t be able to recover it.', size: 14.sp,weight: FontWeight.w500,color: ColorScheme.primary,),
    ],
  ),
  actions: [
   TextButton(onPressed: () {
      Navigator.pop(context);
-  }, child: CustomText1(text: 'Cancel', size: 15.sp,)),
+  }, child: CustomText1(text: 'Cancel', size: 15.sp,color: ColorScheme.primary,)),
   TextButton(onPressed: () {
    
       deleteAccount();

@@ -2,15 +2,17 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flavour_fusion/Chef/model/view/Recipe%20page/Addreport.dart';
 import 'package:flavour_fusion/Chef/model/view/Recipe%20page/addreview.dart';
+import 'package:flavour_fusion/User/view/Recipes/addreportuser.dart';
+import 'package:flavour_fusion/User/view/Recipes/addreviewuser.dart';
 import 'package:flavour_fusion/widgets/custom_text.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_rating_bar/flutter_rating_bar.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 
-class ReviewTab_chef extends StatelessWidget {
+class ReviewTab_user extends StatelessWidget {
   final String recipeId;
 
-  const ReviewTab_chef({Key? key, required this.recipeId}) : super(key: key);
+  const ReviewTab_user({Key? key, required this.recipeId}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -207,14 +209,14 @@ class ReviewTab_chef extends StatelessWidget {
     Navigator.push(
       context,
       MaterialPageRoute(
-        builder: (context) => Addreview_chef(recipeId: recipeId),
+        builder: (context) => Addreview_user(recipeId: recipeId),
       ),
     );
   }
 Future<void> _showReportDialog(BuildContext context, Map<String, dynamic> reviewData,String reviewId,) async {
   final result = await showDialog<String>(
     context: context,
-    builder: (BuildContext context) => AddReport_chef(
+    builder: (BuildContext context) => AddReport_user(
       reviewId: reviewId,
       reportedUserId: reviewData['userId'],
     ),

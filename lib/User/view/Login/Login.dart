@@ -52,7 +52,7 @@ class _LoginUserState extends State<LoginUser> {
                     height: 60.h,
                   ),
                   SizedBox(
-                    height: 50.h,
+                  
                     width: 320.w,
                     child: TextFormField(
                       controller: emailcontroller,
@@ -71,7 +71,8 @@ class _LoginUserState extends State<LoginUser> {
                                 BorderSide(color: Colors.teal, width: 1.w),
                             borderRadius: BorderRadius.circular(10.r),
                           ),
-                          errorBorder: OutlineInputBorder(),
+                          errorBorder: OutlineInputBorder(borderSide: BorderSide(color: Colors.red),borderRadius: BorderRadius.circular(10)),
+                          enabledBorder: OutlineInputBorder(borderSide: BorderSide(color: Colors.white,),borderRadius: BorderRadius.circular(10)),
                           label: CustomText1(text: 'E-mail', size: 13.dg),
                           border: OutlineInputBorder(
                               borderRadius: BorderRadius.circular(10.r))),
@@ -80,7 +81,7 @@ class _LoginUserState extends State<LoginUser> {
                   Padding(
                     padding: EdgeInsets.only(top: 20.h),
                     child: SizedBox(
-                      height: 50.h,
+                    
                       width: 320.w,
                       child: TextFormField(
                         controller: passwordcontroler,
@@ -99,7 +100,8 @@ class _LoginUserState extends State<LoginUser> {
                                   BorderSide(color: Colors.teal, width: 1.w),
                               borderRadius: BorderRadius.circular(10.r),
                             ),
-                            errorBorder: OutlineInputBorder(),
+                             errorBorder: OutlineInputBorder(borderSide: BorderSide(color: Colors.red),borderRadius: BorderRadius.circular(10)),
+                          enabledBorder: OutlineInputBorder(borderSide: BorderSide(color: Colors.white,),borderRadius: BorderRadius.circular(10)),
                             label: CustomText1(text: 'Password', size: 13.sp),
                             border: OutlineInputBorder(
                                 borderRadius: BorderRadius.circular(10.r))),
@@ -116,7 +118,7 @@ class _LoginUserState extends State<LoginUser> {
                                 Navigator.push(
                                     context,
                                     MaterialPageRoute(
-                                      builder: (context) => ForgetPassword(),
+                                      builder: (context) => UserForgetPassword(),
                                     ));
                               },
                               child: CustomText1(
